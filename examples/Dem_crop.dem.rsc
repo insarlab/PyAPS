@@ -1,0 +1,15 @@
+WIDTH         1250
+FILE_LENGTH   2000
+XMIN          0
+XMAX          1249
+YMIN          0
+YMAX          1999 
+X_FIRST       93.75
+Y_FIRST       37.5 
+X_STEP        0.001666668
+Y_STEP        -0.001666668
+X_UNIT        degres
+Y_UNIT        degres
+Z_OFFSET      0
+Z_SCALE       1
+PROJECTION    LL
