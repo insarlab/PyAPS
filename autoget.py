@@ -12,7 +12,7 @@ import sys
 import os.path
 import cdsapi
 
-def ECMWFdload(bdate,hr,filedir,model,datatype,humidity='Q'):
+def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q'):
     '''
     ECMWF data downloading.
 
@@ -91,7 +91,8 @@ def ECMWFdload(bdate,hr,filedir,model,datatype,humidity='Q'):
                       'time':'{}:00'.format(hr)}
 
             # Output
-            fname = '%s/ERA-5_%s_%s_%s.grb'%(filedir,day,hr,datatype)
+            #fname = '%s/ERA-5_%s_%s_%s.grb'%(filedir,day,hr,datatype)
+            fname = '%s/ERA-5_%s_%s.grb'%(filedir,day,hr)
             flist.append(fname)
 
             # Assert grib file not yet downloaded
@@ -100,20 +101,25 @@ def ECMWFdload(bdate,hr,filedir,model,datatype,humidity='Q'):
                 print(indict)
                 
                 # Make the request
-                c.retrieve(
-                        'reanalysis-{}-pressure-levels'.format(model),
-                        indict,
-                        fname)
-        
+                c.retrieve('reanalysis-{}-pressure-levels'.format(model),
+                           indict,
+                           fname)
+
         #-------------------------------------------
         # CASE 2: request for WEB API client (old ECMWF platform, deprecated, for ERA-Int and HRES)
         else:
+            # get account config file
+            dpath = os.path.dirname(__file__)
+            cfiles = [os.path.expanduser('~/.ecmwfcfg'), os.path.join(dpath, 'model.cfg')]
+            if all(not os.path.isfile(i) for i in cfiles):
+                raise FileNotFoundError('No account config file found! It should be: {}'.format(cfiles))
+            else:
+                cfile = [i for i in cfiles if os.path.isfile(i)][0]
 
             # Contact the server
             from pyaps3.ecmwfapi import ECMWFDataServer
-            dpath = os.path.dirname(__file__)
             config = ConfigParser.RawConfigParser()
-            config.read(os.path.expanduser('~/.ecmwfcfg'))
+            config.read(cfile)
             url = "https://api.ecmwf.int/v1"
             emid = config.get('ECMWF', 'email')
             key = config.get('ECMWF', 'key')
@@ -121,9 +127,9 @@ def ECMWFdload(bdate,hr,filedir,model,datatype,humidity='Q'):
 
             # Output
             if model in 'interim':
-                fname = '%s/ERA-Int_%s_%s_%s.grb'%(filedir,day,hr,datatype)
+                fname = '%s/ERA-Int_%s_%s.grb'%(filedir,day,hr)
             elif model in 'hres':
-                fname = '%s/HRES_%s_%s_%s.grb'%(filedir,day,hr,datatype)
+                fname = '%s/HRES_%s_%s.grb'%(filedir,day,hr)
             flist.append(fname)
 
             # Dictionary
