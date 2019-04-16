@@ -7,11 +7,25 @@ Warning: PyAPS3 could not work with NARR and MERRA weather models. Feel free to 
 
 ## Installation
 
-git clone 
+Add to your **_~/.bash_profile_** file for bash user:
 
-wget 
-https://pypi.org/project/cdsapi/
+```bash
+##--------- PyAPS ------------------## 
+export PYAPS_HOME=~/python/PyAPS
+export PYTHONPATH=${PYAPS_HOME}:${PYTHONPATH}
+```
 
+Installing Python dependencies
+
+```
+mdkir PyAPS; cd PyAPS
+git clone https://github.com/AngeliqueBenoit/pyaps3.git
+
+wget https://files.pythonhosted.org/packages/2d/f0/40c8f2f36e2176bbce5557fc2a9bb570f807028968fdad6f4586a0656450/cdsapi-0.1.4.tar.gz
+tar -xvf cdsapi-0.1.4.tar.gz; cd cdsapi-0.1.4
+python setup.py build
+python setup.py install
+```
 
 ## Account setup for global atmospheric models
 ### [ERA-5](https://retostauffer.org/code/Download-ERA5/)
