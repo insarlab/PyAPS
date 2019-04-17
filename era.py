@@ -35,20 +35,22 @@ def cc_era(tmp,cdic):
     esati = a1i*np.exp(a3i*(tmp-T3)/(tmp-a4i))
     esat = esati.copy()
     for k in range(len(tmp)):
-       if (tmp[k] >= T3):
-           esat[k] = esatw[k]
-       elif (tmp[k] <= Ti):
-           esat[k] = esati[k]
-       else:
-           wgt = (tmp[k]-Ti)/(T3-Ti)
-           esat[k] = esati[k] + (esatw[k]-esati[k])*wgt*wgt
+        if (tmp[k] >= T3):
+            esat[k] = esatw[k]
+        elif (tmp[k] <= Ti):
+            esat[k] = esati[k]
+        else:
+            wgt = (tmp[k]-Ti)/(T3-Ti)
+            esat[k] = esati[k] + (esatw[k]-esati[k])*wgt*wgt
 
     return esat
 
 
 ########Read in ERA data from a given ERA Interim file##################
 def get_era(fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose=False):
-    '''Read data from ERA interim grib file. Note that the Lon values should be between [0-360]. GRB file with weather model data can be downloaded from http://rda.ucar.edu/datasets/ds627.0/
+    '''Read data from ERA interim grib file. 
+    Note that the Lon values should be between [0-360]. 
+    GRB file with weather model data can be downloaded from http://rda.ucar.edu/datasets/ds627.0/
 
     Args:
         * fname       (str):  Path to the grib file
@@ -72,12 +74,13 @@ def get_era(fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose=False):
     .. note::
         Uses cc_era by default.
         '''
-
     
     assert humidity in ('Q','R'), 'Undefined humidity field in get_era.'
     if verbose:
-        print('PROGRESS: READING GRIB FILE')
-    lvls = np.array([1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 125, 150, 175, 200, 225, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000])
+        print('PROGRESS: READING GRIB FILE {}'.format(fname))
+    lvls = np.array([1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 125, 150, 175, 
+                     200, 225, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 775, 
+                     800, 825, 850, 875, 900, 925, 950, 975, 1000])
     nlvls = len(lvls)
 
     alpha = cdic['Rv']/cdic['Rd']
@@ -140,7 +143,7 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
     Modified by A. Benoit, January 2019.
 
     Args:
-        * model       (str):  Model used (ERA-Int, ERA-5 or hres)
+        * model       (str):  Model used (eraint, era5 or hres)
         * fname       (str):  Path to the grib file
         * minlat (np.float):  Minimum latitude
         * maxlat (np.float):  Maximum latitude
@@ -162,17 +165,21 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
     .. note::
         Uses cc_era by default.
         '''
-    
+
     assert humidity in ('Q','R'), 'Undefined humidity field in get_era.'
-    assert model in ('ERA-5', 'ERA-Int','hres'), 'Model not recognized.'
+    assert model in ('era5', 'eraint','hres'), 'Model not recognized.'
     if verbose:
         print('PROGRESS: READING GRIB FILE')
     if model in 'hres':
-        print('USING PRESSURE LEVELS OF HRES DATA')
-        lvls = np.array([1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 850, 900, 925, 950, 1000])
+        print('INFO: USING PRESSURE LEVELS OF HRES DATA')
+        lvls = np.array([1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 
+                         200, 250, 300, 400, 500, 600, 700,
+                         800, 850, 900, 925, 950, 1000])
     else:
-        print('USING PRESSURE LEVELS OF ERA-INT OR ERA-5 DATA')
-        lvls = np.array([1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 125, 150, 175, 200, 225, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000])
+        print('INFO: USING PRESSURE LEVELS OF ERA-INT OR ERA-5 DATA')
+        lvls = np.array([1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 125, 150, 175, 
+                         200, 225, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 775,
+                         800, 825, 850, 875, 900, 925, 950, 975, 1000])
     nlvls = len(lvls)
 
     alpha = cdic['Rv']/cdic['Rd']
@@ -180,7 +187,7 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
     
     grbs = pygrib.open(fname)
     grbs.seek(gphind[0])
-    grb=grbs.read(1)[0]
+    grb = grbs.read(1)[0]
     lats,lons = grb.latlons()
     g = cdic['g']    
     
@@ -199,7 +206,7 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
     tmp = gph.copy()                  #Temperature
     vpr = gph.copy()                  #Vapor pressure
     if verbose:
-        print('Image dimensions :', nlat,'latitudes and',nlon,'longitudes')
+        print('INFO: IMAGE DIMENSIONS: {} LATITUDES AND {} LONGITUDES'.format(nlat, nlon))
 
     lvls = 100.0*lvls              #Conversion to absolute pressure
     for i in range(nlvls):
