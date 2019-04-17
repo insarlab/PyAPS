@@ -1,0 +1,7 @@
+numpy
+scipy
+matplotlib
+cdsapi
+pygrib
+pyhdf
+netcdf4
