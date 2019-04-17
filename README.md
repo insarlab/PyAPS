@@ -21,7 +21,7 @@ Installing Python dependencies
 mdkir PyAPS; cd PyAPS
 git clone https://github.com/AngeliqueBenoit/pyaps3.git
 
-wget https://files.pythonhosted.org/packages/2d/f0/40c8f2f36e2176bbce5557fc2a9bb570f807028968fdad6f4586a0656450/cdsapi-0.1.4.tar.gz
+wget https://github.com/ecmwf/cdsapi/archive/v0.1.4.tar.gz -O cdsapi-0.1.4.tar.gz
 tar -xvf cdsapi-0.1.4.tar.gz; cd cdsapi-0.1.4
 python setup.py build
 python setup.py install
