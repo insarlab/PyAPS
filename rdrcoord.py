@@ -7,42 +7,21 @@
 # Contact: insar@geologie.ens.fr                           #
 ############################################################
 import os.path
+import sys
 import numpy as np
-import pyaps3.utils as utils
-import pyaps3.processor as processor
 import scipy.integrate as intg
-
-GRIBflag = True
-MERRAflag = True
-
-try:
-    import pyaps3.era as era
-except:
-    GRIBflag = False
-
-try:
-    import pyaps3.narr as narr
-except:
-    GRIBflag = False
-
-try:
-    import pyaps3.merra as merra
-except:
-    MERRAflag = False
-
 import scipy.interpolate as si
 import matplotlib.pyplot as plt
-import sys
+import pyaps3.utils as utils
+import pyaps3.processor as processor
+
 
 def sanity_check(model):
-    if model in ('ECMWF','ERA','NARR') and GRIBflag==False:
-        print('No module name pygrib found.')
-        print('To use ECMWF and NARR, please install pygrib.')
-
-    if model=='MERRA' and MERRAflag==False:
-        print('No module name pyhdf found')
-        print('To use MERRA, please install pyhdf')
-        print('Visit: http://pysclint.sourceforge.net/pyhdf')
+    if model in ('ECMWF','ERA','NARR'):
+        from . import era, narr
+    if model=='MERRA':
+        from . import merra
+    return
 
 
 ##############Creating a class object for PyAPS use.
@@ -84,10 +63,10 @@ class PyAPS_rdr:
         # Check grib file exists
         assert os.path.isfile(gribfile), 'PyAPS: GRIB File does not exist.'
         self.gfile = gribfile
-        
+
         # Get altitude, lon, lat, etc
         self.dem = dem
-        self.lon = lon 
+        self.lon = lon
         self.lat = lat
         self.inc = inc
         if mask is None:
@@ -107,40 +86,18 @@ class PyAPS_rdr:
 
         # Get some scales
         if grib in ('ERA','ECMWF'):
-            if GRIBflag:
-                self.bufspc = 1.2
-            else:
-                print('================================')
-                print('********************************')
-                print('  pyGrib needs to be installed  ')
-                print('    No ECMWF or NARR possible   ')
-                print('********************************')
-                print('================================')
-                sys.exit(1)
+            self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.703
+            self.rdrscale = 70000./dpix
+            self.bufspc = 1.2
         elif grib in ('NARR'):
-            if GRIBflag:
-                self.bufspc = 1.2
-            else:
-                print('================================')
-                print('********************************')
-                print('  pyGrib needs to be installed  ')
-                print('    No ECMWF or NARR possible   ')
-                print('********************************')
-                print('================================')
-                sys.exit(1)
+            self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.3
+            self.rdrscale = 32000./dpix
             self.bufspc = 1.2
         elif grib in ('MERRA'):
-            if MERRAflag:
-                self.bufspc = 1.0 
-            else:
-                print('================================')
-                print('********************************')
-                print('  pyHdf needs to be installed   ')
-                print('        No MERRA possible       ')
-                print('********************************')
-                print('================================')
-                sys.exit(1)
-            
+            self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.5
+            self.rdrscale = 32000./dpix
+            self.bufspc = 1.0 
+
         ######Problems in isce when lon and lat arrays have weird numbers
         self.lon[self.lon < 0.] += 360.0
         if box is None:
@@ -195,7 +152,7 @@ class PyAPS_rdr:
                                                                  self.maxlon,
                                                                  self.dict,
                                                                  verbose=verb)
-            lonlist[lonlist < 0.] += 360.0 
+            lonlist[lonlist < 0.] += 360.0
 
         # Make a height scale
         hgt = np.linspace(self.dict['minAltP'],gph.max().round(),self.dict['nhgt'])
@@ -218,7 +175,7 @@ class PyAPS_rdr:
         if self.grib in ('NARR'):
             assert False, 'Need to check narr.intdel'
             [Delfn,latlist,lonlist] = narr.intdel(hgt,latlist,lonlist,Delfn)
-        
+
         # Save things
         self.Delfn = Delfn
         self.latlist = latlist
