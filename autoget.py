@@ -12,6 +12,12 @@ import sys
 import os.path
 import cdsapi
 
+######Set up variables in model.cfg before using
+dpath = os.path.dirname(__file__)
+config = ConfigParser.RawConfigParser(delimiters='=')
+config.read('%s/model.cfg'%(dpath))
+
+
 def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q'):
     '''
     ECMWF data downloading.
@@ -69,9 +75,11 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q'):
         #-------------------------------------------
         # CASE 1: request for CDS API client (new ECMWF platform, for ERA-5)    
         if model in 'era5':
-            
+            url = 'https://cds.climate.copernicus.eu/api/v2'
+            key = config.get('CDS', 'key')
+
             # Contact the server
-            c = cdsapi.Client()
+            c = cdsapi.Client(url=url, key=key)
 
             # Pressure levels
             pressure_lvls = ['1','2','3','5','7','10','20','30','50', 
@@ -101,25 +109,13 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q'):
                 print(indict)
                 
                 # Make the request
-                c.retrieve('reanalysis-{}-pressure-levels'.format(model),
-                           indict,
-                           fname)
+                c.retrieve('reanalysis-{}-pressure-levels'.format(model),indict,target=fname)
 
         #-------------------------------------------
         # CASE 2: request for WEB API client (old ECMWF platform, deprecated, for ERA-Int and HRES)
         else:
-            # get account config file
-            dpath = os.path.dirname(__file__)
-            cfiles = [os.path.expanduser('~/.ecmwfcfg'), os.path.join(dpath, 'model.cfg')]
-            if all(not os.path.isfile(i) for i in cfiles):
-                raise FileNotFoundError('No account config file found! It should be: {}'.format(cfiles))
-            else:
-                cfile = [i for i in cfiles if os.path.isfile(i)][0]
-
             # Contact the server
             from pyaps3.ecmwfapi import ECMWFDataServer
-            config = ConfigParser.RawConfigParser()
-            config.read(cfile)
             url = "https://api.ecmwf.int/v1"
             emid = config.get('ECMWF', 'email')
             key = config.get('ECMWF', 'key')
@@ -153,3 +149,77 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q'):
                 server.retrieve(indict)
 
     return flist
+
+
+def MERRAdload(bdate,hr,filedir, hdf=False):
+    print('By default, downloads MERRA-2 data.')
+    user = config.get('MERRA', 'user')
+    pw = config.get('MERRA', 'password')
+
+    if not os.path.isdir(filedir):
+        os.makedirs(filedir)
+        print('create foler: {}'.format(filedir))
+
+    flist = []
+    for i in range(len(bdate)):
+        date = bdate[i]
+        filename = '%s/merra-%s-%s.nc4' %(filedir,date,hr)
+        flist.append(filename)
+        print('Downloading %d of %d: %s'%((i+1),len(bdate),filename))
+        yr = date[0:4]
+        mon = date[4:6]
+        hr = hr
+        year = int(yr)
+        url1 = 'http://goldsmr5.gesdisc.eosdis.nasa.gov/daac-bin/OTF/'
+        url1 += 'HTTP_services.cgi?FILENAME=%2Fdata%2Fs4pa%2FMERRA2%2FM2I6NPANA.5.12.4%2F'
+        url2 = '%2F'
+        url3 = '%2FMERRA2_300.inst6_3d_ana_Np.'
+        url3n = '%2FMERRA2_400.inst6_3d_ana_Np.'
+        url3o = '%2FMERRA2_100.inst6_3d_ana_Np.'
+
+        url4 = '.nc4&FORMAT=bmM0Yy8&BBOX=-90%2C-180%2C90%2C180&TIME=1979-01-01T'
+
+        url5 = '%3A00%3A00%2F1979-01-01T'
+        url6 = '%3A00%3A00&LABEL=svc_MERRA2_300.inst6_3d_ana_Np.'
+        url6n = '%3A00%3A00&LABEL=svc_MERRA2_400.inst6_3d_ana_Np.'
+        url6o = '%3A00%3A00&LABEL=svc_MERRA2_100.inst6_3d_ana_Np.'
+
+        url7 = '.nc4&FLAGS=&SHORTNAME=M2I6NPANA&SERVICE=SUBSET_MERRA2&LAYERS=&VERSION=1.02&VARIABLES='
+
+        if year < 1992:
+            weburl = '%s%s%s%s%s%s%s%s%s%s%s%s%s' %(url1,yr,url2,mon,url3o,date,url4,hr,url5,hr,url6o,date,url7)
+        elif year < 2001:
+            weburl = '%s%s%s%s%s%s%s%s%s%s%s%s%s' %(url1,yr,url2,mon,url3,date,url4,hr,url5,hr,url6,date,url7)
+        else:
+            weburl = '%s%s%s%s%s%s%s%s%s%s%s%s%s' %(url1,yr,url2,mon,url3n,date,url4,hr,url5,hr,url6n,date,url7)
+        dir = '%s' %(filename)
+                
+        if not os.path.exists(dir):
+            #urllib.urlretrieve(weburl,dir)
+            dloadCmd = 'wget "{}" --user {} --password {} -O {}'.format(weburl, user, pw, filename)
+            dloadCmd += ' --load-cookies ~/.urs_cookies --save-cookies ~/.urs_cookies'
+            dloadCmd += ' --auth-no-challenge=on --keep-session-cookies'
+            os.system(dloadCmd)
+
+    return flist
+
+
+def NARRdload(bdate,hr,filedir):
+    if not os.path.isdir(filedir):
+        os.makedirs(filedir)
+        print('create foler: {}'.format(filedir))
+
+    flist = []      
+    for k in range(len(bdate)):
+            day = bdate[k]
+            webdir = day[0:6]
+            fname = 'narr-a_221_%s_%s00_000.grb'%(day,hr)
+            flist.append('%s/%s'%(filedir,fname))
+            weburl='http://nomads.ncdc.noaa.gov/data/narr/%s/%s/%s'%(webdir,day,fname)
+            dname = '%s/%s'%(filedir,fname)
+            print('Downloading %d of %d: %s'%(k+1,len(bdate),fname))
+            if not os.path.exists(dname):
+                    urlretrieve(weburl,dname) #,reporthook)
+
+    return flist
+

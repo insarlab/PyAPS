@@ -1,3 +1,9 @@
+# vim: set filetype=cfg:
+#####key for ECMWF in Climate Data Store Application Program Interface
+#Get it from https://retostauffer.org/code/Download-ERA5/
+[CDS]
+key = 
+
 #The key to the new server for ECMWF
 ##Get it from https://software.ecmwf.int/wiki/display/WEBAPI/Accessing+ECMWF+data+servers+in+batch 
 [ECMWF]
@@ -14,6 +20,7 @@ key =
 email = the-email-adress-used-as-login@ucar-website.org
 key = 
 
+#####No username/password is required for NARR
 [NARR]
 
 #####Username and password for download from NASA Earthdata
