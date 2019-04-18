@@ -7,10 +7,11 @@ Written by Romain Jolivet <rjolivet@gps.caltech.edu> and Piyush Agram <piyush@gp
 	Details of the python module can be obtained `here. <http://code.google.com/p/pyaps>`_
 '''
 
-__all__ = ['geocoord','rdrcoord','autoget']
+__all__ = ['geocoord','rdrcoord','autoget','pyapsobj']
 
-from .geocoord import PyAPS_geo
-from .rdrcoord import PyAPS_rdr
+#from .geocoord import PyAPS_geo
+#from .rdrcoord import PyAPS_rdr
+from .pyapsobj import PyAPS
 from .autoget import *
 
 
