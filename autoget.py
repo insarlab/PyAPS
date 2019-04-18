@@ -11,6 +11,10 @@ import configparser as ConfigParser
 import sys
 import os.path
 import cdsapi
+# disable InsecureRequestWarning message from cdsapi
+import urllib3
+urllib3.disable_warnings()
+
 
 ######Set up variables in model.cfg before using
 dpath = os.path.dirname(__file__)
@@ -18,7 +22,7 @@ config = ConfigParser.RawConfigParser(delimiters='=')
 config.read('%s/model.cfg'%(dpath))
 
 
-def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q'):
+def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=None):
     '''
     ECMWF data downloading.
 
@@ -28,6 +32,7 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q'):
         * filedir   : files directory (str)
         * model     : weather model ('interim' or 'era5' or 'hres')
         * datatype  : reanalysis data type (an)
+        * snwe      : area extent (tuple of int)
         * humidity  : humidity
     '''
     
@@ -39,9 +44,11 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q'):
 
     # Infos for downloading
     if model in 'interim':
-        print('WARNING: you are downloading from the old ECMWF platform. ERA-Interim is deprecated, use ERA-5 instead.')
+        print('WARNING: you are downloading from the old ECMWF platform. '
+              'ERA-Interim is deprecated, use ERA-5 instead.')
     if model in 'era5':
-        print('INFO: You are using the latest ECMWF platform for downloading datasets: https://cds.climate.copernicus.eu/api/v2')
+        print('INFO: You are using the latest ECMWF platform for downloading datasets: '
+              'https://cds.climate.copernicus.eu/api/v2')
 
     #-------------------------------------------
     # Define parameters
@@ -91,6 +98,7 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q'):
             # Dictionary
             indict = {'product_type':'reanalysis',
                       'format':'grib',
+                      'area':'35.00/128.00/28.00/133.00',
                       'variable':['geopotential','temperature','{}'.format(humidparam)],
                       'pressure_level': pressure_lvls,
                       'year':'{}'.format(day[0:4]),
@@ -98,16 +106,23 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q'):
                       'day':'{}'.format(day[6:8]),
                       'time':'{}:00'.format(hr)}
 
+            if snwe:
+                s, n, w, e = snwe
+                indict['area'] = '{n:.2f}/{w:.2f}/{s:.2f}/{e:.2f}'.format(s=s, n=n, w=w, e=e)
+
             # Output
-            #fname = '%s/ERA-5_%s_%s_%s.grb'%(filedir,day,hr,datatype)
-            fname = '%s/ERA-5_%s_%s.grb'%(filedir,day,hr)
+            if snwe:
+                suffix = 'N{s}_N{n}_W{w}_W{e}'.format(s=s, n=n, w=w, e=e)
+                fname = os.path.join(filedir, 'ERA-5_{}_{}_{}.grb'.format(suffix, day, hr))
+            else:
+                fname = os.path.join(filedir, 'ERA-5_{}_{}.grb'.format(day, hr))
             flist.append(fname)
 
             # Assert grib file not yet downloaded
             if not os.path.exists(fname):
                 print('Downloading %d of %d: %s '%(k+1,len(bdate),fname))
                 print(indict)
-                
+
                 # Make the request
                 c.retrieve('reanalysis-{}-pressure-levels'.format(model),indict,target=fname)
 
