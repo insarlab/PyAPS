@@ -17,9 +17,23 @@ import xml.etree.ElementTree as ET
 
 
 ###############Read ISCE / ROIPAC file###############
-def get_lat_lon(rscfile):
-    """Get 2D lat and lon from rsc file"""
-    meta = read_roipac_rsc(rscfile)
+def get_lat_lon(metafile):
+    """Get 2D lat and lon from rsc/xml file
+    Args:
+        * metafile (str or dict) : path to metadata file, or dict of metadata
+    """
+    if isinstance(metafile, str):
+        fext = os.path.splitext(metafile)[1]
+        if fext == '.rsc':
+            meta = read_roipac_rsc(metafile)
+        elif fext == '.xml':
+            meta = read_isce_xml(metafile)
+        else:
+            raise ValueError('unrecognized file extension: {}'.format(fext))
+    elif isinstance(metafile, dict):
+        meta = {}
+        for key, value in metafile.items():
+            meta[key] = value
     length, width = int(meta['FILE_LENGTH']), int(meta['WIDTH'])
 
     # get bbox
@@ -129,7 +143,9 @@ def read_metadata(fname, latfile=None, lonfile=None, full=False, verbose=False):
 
 
 def read_isce_xml(xmlfile):
-    """Read ISCE XML file into dict"""
+    """Read ISCE XML file into dict.
+    Add from PySAR/pysar/utils/readfile.py by Zhang Yunjun
+    """
     meta = {}
     root = ET.parse(xmlfile).getroot()
     if root.tag.startswith('image'):
@@ -137,6 +153,17 @@ def read_isce_xml(xmlfile):
             key = child.get('name')
             value = child.find('value').text
             meta[key] = value
+
+        # Read lat/lon info for geocoded file
+        # in form: root/component coordinate*/property name/value
+        for coord_name, prefix in zip(['coordinate1', 'coordinate2'], ['X', 'Y']):
+            child = root.find("./component[@name='{}']".format(coord_name))
+            if ET.iselement(child):
+                v_step  = float(child.find("./property[@name='delta']").find('value').text)
+                v_first = float(child.find("./property[@name='startingvalue']").find('value').text)
+                if abs(v_step) < 1. and abs(v_step) > 1e-7:
+                    xmlDict['{}_STEP'.format(prefix)] = v_step
+                    xmlDict['{}_FIRST'.format(prefix)] = v_first - v_step / 2.
 
     # convert key name from isce to roipac
     isce2roipacKeyDict = {
@@ -177,7 +204,9 @@ def read_isce_data(fname, dname=None):
 
 
 def get_isce_lalo_ref(lat_file, lon_file):
-    """Get LAT/LON_REF1/2/3/4 value from ISCE lat/lon.rdr file"""
+    """Get LAT/LON_REF1/2/3/4 value from ISCE lat/lon.rdr file
+    Add from PySAR/pysar/prep_isce.py by Zhang Yunjun
+    """
 
     def get_nonzero_row_number(data, buffer=2):
         """Find the first and last row number of rows without zero value
