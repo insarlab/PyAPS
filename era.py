@@ -171,12 +171,14 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
     if verbose:
         print('PROGRESS: READING GRIB FILE')
     if model in 'hres':
-        print('INFO: USING PRESSURE LEVELS OF HRES DATA')
+        if verbose:
+            print('INFO: USING PRESSURE LEVELS OF HRES DATA')
         lvls = np.array([1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 
                          200, 250, 300, 400, 500, 600, 700,
                          800, 850, 900, 925, 950, 1000])
     else:
-        print('INFO: USING PRESSURE LEVELS OF ERA-INT OR ERA-5 DATA')
+        if verbose:
+            print('INFO: USING PRESSURE LEVELS OF ERA-INT OR ERA-5 DATA')
         lvls = np.array([1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 125, 150, 175, 
                          200, 225, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 775,
                          800, 825, 850, 875, 900, 925, 950, 975, 1000])
@@ -184,7 +186,7 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
 
     alpha = cdic['Rv']/cdic['Rd']
     gphind = np.arange(nlvls)*3
-    
+
     grbs = pygrib.open(fname)
     grbs.seek(gphind[0])
     grb = grbs.read(1)[0]
