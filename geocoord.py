@@ -53,7 +53,7 @@ class PyAPS_geo:
         .. note :: 
         The DEMFile is only used to set up the geographic boundaries of the problem and the size of the output matrix
         during init. The GRIBfile is read and the 3D interpolation function is prepared.
-       '''
+        '''
 
         sanity_check(grib)
         grib = grib.upper()
@@ -70,122 +70,123 @@ class PyAPS_geo:
         if self.grib in ('NARR','MERRA'):
             assert self.humidity in ('Q'), 'PyAPS: Relative humidity not provided by NARR/MERRA.'
 
-            assert os.path.isfile(gribfile), 'PyAPS: GRIB File does not exist.'
-            self.gfile = gribfile
+        assert os.path.isfile(gribfile), 'PyAPS: GRIB File does not exist.'
+        self.gfile = gribfile
 
-            assert os.path.isfile(demfile), 'PyAPS: DEM file does not exist.'
-            self.hfile = demfile
-
-
-            assert demfmt in ('RMG','HGT','VAR'), 'PyAPS: DEM Format can be RMG or HGT, VAR'
-            self.fmt = demfmt
-
-            self.demtype = demtype
-            self.dict = processor.initconst()
-            self.bufspc = 1.2           ####Hardcoded.
-
-            if grib in ('ERA','ECMWF'):
-                self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.703
-            elif grib in ('NARR'):
-                self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.3
-            elif grib in ('MERRA'):
-                self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.5
-
-            [lon,lat,nx,ny] = utils.geo_rsc(self.hfile,verbose=verb)
+        assert os.path.isfile(demfile), 'PyAPS: DEM file does not exist.'
+        self.hfile = demfile
 
 
-            ######Problems near the international dateline
-            if grib in ('MERRA'):
+        assert demfmt in ('RMG','HGT','VAR'), 'PyAPS: DEM Format can be RMG or HGT, VAR'
+        self.fmt = demfmt
+
+        self.demtype = demtype
+        self.dict = processor.initconst()
+        self.bufspc = 1.2           ####Hardcoded.
+
+        if grib in ('ERA','ECMWF'):
+            self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.703
+        elif grib in ('NARR'):
+            self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.3
+        elif grib in ('MERRA'):
+            self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.5
+
+        [lon,lat,nx,ny] = utils.geo_rsc(self.hfile,verbose=verb)
+
+
+        ######Problems near the international dateline
+        if grib in ('MERRA'):
             #MERRA's longtidue range -180~180.
             #This is to correct the value from utils.geo_rsc() function. Cunren, OCT-2015
-                if(lon[0] > 180):
-                    lon[0] = lon[0] - 360.0
-                if(lon[1] > 180):
-                    lon[1] = lon[1] - 360.0
+            lon[lon > 180] -= 360.0
+            #if(lon[0] > 180):
+            #    lon[0] = lon[0] - 360.0
+            #if(lon[1] > 180):
+            #    lon[1] = lon[1] - 360.0
+    
+            self.minlon = lon.min()-self.bufspc
+            self.maxlon = lon.max()+self.bufspc
+            self.minlat = lat.min()-self.bufspc
+            self.maxlat = lat.max()+self.bufspc
+            self.nx = nx
+            self.ny = ny
+        else:
+            lon[lon < 0] += 360.0
+            self.minlon = lon.min()-self.bufspc
+            self.maxlon = lon.max()+self.bufspc
+            self.minlat = lat.min()-self.bufspc
+            self.maxlat = lat.max()+self.bufspc
+            self.nx = nx
+            self.ny = ny
 
-                    self.minlon = lon.min()-self.bufspc
-                    self.maxlon = lon.max()+self.bufspc
-                    self.minlat = lat.min()-self.bufspc
-                    self.maxlat = lat.max()+self.bufspc
-                    self.nx = nx
-                    self.ny = ny
-                else:
-                    lon[lon < 0.] += 360.0
-                    self.minlon = lon.min()-self.bufspc
-                    self.maxlon = lon.max()+self.bufspc
-                    self.minlat = lat.min()-self.bufspc
-                    self.maxlat = lat.max()+self.bufspc
-                    self.nx = nx
-                    self.ny = ny
+        if self.grib in ('ERA'):
+            [lvls,latlist,lonlist,gph,tmp,vpr] = era.get_era(self.gfile,
+                                                             self.minlat,
+                                                             self.maxlat,
+                                                             self.minlon,
+                                                             self.maxlon,
+                                                             self.dict,
+                                                             humidity=self.humidity,
+                                                             verbose=verb)
 
-                if self.grib in ('ERA'):
-                    [lvls,latlist,lonlist,gph,tmp,vpr] = era.get_era(self.gfile,
-                                                                     self.minlat,
-                                                                     self.maxlat,
-                                                                     self.minlon,
-                                                                     self.maxlon,
-                                                                     self.dict,
-                                                                     humidity=self.humidity,
-                                                                     verbose=verb)
+        elif self.grib in ('ECMWF'):
+            [lvls,latlist,lonlist,gph,tmp,vpr] = era.get_ecmwf(self.gfile,
+                                                               self.minlat,
+                                                               self.maxlat,
+                                                               self.minlon,
+                                                               self.maxlon,
+                                                               self.dict,
+                                                               humidity=self.humidity,
+                                                               verbose=verb)
 
-                elif self.grib in ('ECMWF'):
-                    [lvls,latlist,lonlist,gph,tmp,vpr] = era.get_ecmwf(self.gfile,
-                                                                       self.minlat,
-                                                                       self.maxlat,
-                                                                       self.minlon,
-                                                                       self.maxlon,
-                                                                       self.dict,
-                                                                       humidity=self.humidity,
-                                                                       verbose=verb)
+        elif self.grib in ('NARR'):
+            [lvls,latlist,lonlist,gph,tmp,vpr] = narr.get_narr(self.gfile,
+                                                               self.minlat,
+                                                               self.maxlat,
+                                                               self.minlon,
+                                                               self.maxlon,
+                                                               self.dict,
+                                                               verbose=verb)
+        elif self.grib in ('MERRA'):
+            [lvls,latlist,lonlist,gph,tmp,vpr] = merra.get_merra(self.gfile,
+                                                                 self.minlat,
+                                                                 self.maxlat,
+                                                                 self.minlon,
+                                                                 self.maxlon,
+                                                                 self.dict,
+                                                                 verbose=verb)
+            lonlist[lonlist < 0.] += 360.0
 
-                elif self.grib in ('NARR'):
-                    [lvls,latlist,lonlist,gph,tmp,vpr] = narr.get_narr(self.gfile,
-                                                                       self.minlat,
-                                                                       self.maxlat,
-                                                                       self.minlon,
-                                                                       self.maxlon,
-                                                                       self.dict,
-                                                                       verbose=verb)
-                elif self.grib in ('MERRA'):
-                    [lvls,latlist,lonlist,gph,tmp,vpr] = merra.get_merra(self.gfile,
-                                                                         self.minlat,
-                                                                         self.maxlat,
-                                                                         self.minlon,
-                                                                         self.maxlon,
-                                                                         self.dict,
-                                                                         verbose=verb)
-                    lonlist[lonlist < 0.] += 360.0
+        hgt = np.linspace(self.dict['minAlt'],self.dict['maxAlt'],self.dict['nhgt'])
 
-                hgt = np.linspace(self.dict['minAlt'],self.dict['maxAlt'],self.dict['nhgt'])
+        [Pi,Ti,Vi] = processor.intP2H(lvls,hgt,gph,tmp,vpr,self.dict,verbose=verb)
 
-                [Pi,Ti,Vi] = processor.intP2H(lvls,hgt,gph,tmp,vpr,self.dict,verbose=verb)
+        [DDry,DWet] = processor.PTV2del(Pi,Ti,Vi,hgt,self.dict,verbose=verb)
 
-                [DDry,DWet] = processor.PTV2del(Pi,Ti,Vi,hgt,self.dict,verbose=verb)
+        if Del in ('comb','Comb'):
+            Delfn=DDry+DWet
+        elif Del in ('dry','Dry'):
+            Delfn=DDry
+        elif Del in ('wet','Wet'):
+            Delfn=DWet
+        else:
+            print('Unrecognized delay type')
+            sys.exit(1)
 
-                if Del in ('comb','Comb'):
-                    Delfn=DDry+DWet
-                elif Del in ('dry','Dry'):
-                    Delfn=DDry
-                elif Del in ('wet','Wet'):
-                    Delfn=DWet
-                else:
-                    print('Unrecognized delay type')
-                    sys.exit(1)
+        if self.grib in ('NARR'):
+            [Delfn,latlist,lonlist] = narr.intdel(hgt,latlist,lonlist,Delfn)
 
-                if self.grib in ('NARR'):
-                    [Delfn,latlist,lonlist] = narr.intdel(hgt,latlist,lonlist,Delfn)
-
-                self.Delfn = Delfn
-                self.lonlist = lonlist
-                self.latlist = latlist
-                self.Pi = Pi
-                self.Vi = Vi
-                self.Ti = Ti
-                self.hgt = hgt
-                self.verb = verb
+        self.Delfn = Delfn
+        self.lonlist = lonlist
+        self.latlist = latlist
+        self.Pi = Pi
+        self.Vi = Vi
+        self.Ti = Ti
+        self.hgt = hgt
+        self.verb = verb
 
 
-        def merisfactor(self,dataobj,inc=0.0,wvl=4*np.pi):
+    def merisfactor(self,dataobj,inc=0.0,wvl=4*np.pi):
             '''
             Write pi-factor from Li et al 2012 to a matrix / HDF5 object or a file directly.
 
