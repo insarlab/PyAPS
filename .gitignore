@@ -3,3 +3,5 @@
 *model.cfg
 *.grb
 *.nc4
+*checkpoint.ipynb
+
