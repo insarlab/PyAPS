@@ -22,7 +22,7 @@ config = ConfigParser.RawConfigParser(delimiters='=')
 config.read('%s/model.cfg'%(dpath))
 
 
-def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=None):
+def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=None,flist=None):
     '''
     ECMWF data downloading.
 
@@ -73,11 +73,24 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=Non
         gridsize = '0.75/0.75'
 
     #-------------------------------------------
-    # Iterate over dates
+    # file name
+    if not flist:
+        flist = []
+        for k in range(len(bdate)):
+            if model == 'era5':
+                fname = os.path.join(filedir, 'ERA-5_{}_{}.grb'.format(day, hr))
+            elif model == 'eraint':
+                fname = os.path.join(filedir, 'ERA-Int_{}_{}.grb'.format(day, hr))
+            elif model in 'hres':
+                fname = os.path.join(filedir, 'HRES_{}_{}.grb'.format(day, hr))
+            else:
+                raise ValueError('unrecognized model input: {}'.format(model))
+            flist.append(fname)
 
-    flist = []
+    # Iterate over dates
     for k in range(len(bdate)):
         day = bdate[k]
+        fname = flist[k]
 
         #-------------------------------------------
         # CASE 1: request for CDS API client (new ECMWF platform, for ERA-5)    
@@ -96,31 +109,23 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=Non
                             '850','875','900','925','950','975','1000']
 
             # Dictionary
-            indict = {'product_type':'reanalysis',
-                      'format':'grib',
-                      'area':'35.00/128.00/28.00/133.00',
-                      'variable':['geopotential','temperature','{}'.format(humidparam)],
-                      'pressure_level': pressure_lvls,
-                      'year':'{}'.format(day[0:4]),
-                      'month':'{}'.format(day[4:6]),
-                      'day':'{}'.format(day[6:8]),
-                      'time':'{}:00'.format(hr)}
+            indict = {'product_type'   :'reanalysis',
+                      'format'         :'grib',
+                      'variable'       :['geopotential','temperature','{}'.format(humidparam)],
+                      'pressure_level' : pressure_lvls,
+                      'year'           :'{}'.format(day[0:4]),
+                      'month'          :'{}'.format(day[4:6]),
+                      'day'            :'{}'.format(day[6:8]),
+                      'time'           :'{}:00'.format(hr)}
 
-            if snwe:
+            # download a geographical area subset
+            if snwe is not None:
                 s, n, w, e = snwe
-                indict['area'] = '{n:.2f}/{w:.2f}/{s:.2f}/{e:.2f}'.format(s=s, n=n, w=w, e=e)
-
-            # Output
-            if snwe:
-                suffix = 'N{s}_N{n}_W{w}_W{e}'.format(s=s, n=n, w=w, e=e)
-                fname = os.path.join(filedir, 'ERA-5_{}_{}_{}.grb'.format(suffix, day, hr))
-            else:
-                fname = os.path.join(filedir, 'ERA-5_{}_{}.grb'.format(day, hr))
-            flist.append(fname)
+                indict['area'] = '/'.join(['{:.2f}'.format(x) for x in [n, w, s, e]])
 
             # Assert grib file not yet downloaded
             if not os.path.exists(fname):
-                print('Downloading %d of %d: %s '%(k+1,len(bdate),fname))
+                print('Downloading %d of %d: %s '%(k+1,len(bdate), fname))
                 print(indict)
 
                 # Make the request
@@ -135,13 +140,6 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=Non
             emid = config.get('ECMWF', 'email')
             key = config.get('ECMWF', 'key')
             server = ECMWFDataServer(url=url, key=key, email=emid)
-
-            # Output
-            if model in 'interim':
-                fname = '%s/ERA-Int_%s_%s.grb'%(filedir,day,hr)
-            elif model in 'hres':
-                fname = '%s/HRES_%s_%s.grb'%(filedir,day,hr)
-            flist.append(fname)
 
             # Dictionary
             indict = {'dataset'  : '{}'.format(model),
