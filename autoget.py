@@ -22,7 +22,7 @@ config = ConfigParser.RawConfigParser(delimiters='=')
 config.read('%s/model.cfg'%(dpath))
 
 
-def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=None,flist=None):
+def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=None,flist=None):
     '''
     ECMWF data downloading.
 
@@ -30,7 +30,7 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=Non
         * bdate     : date to download (str)
         * hr        : hour to download (str)
         * filedir   : files directory (str)
-        * model     : weather model ('interim' or 'era5' or 'hres')
+        * model     : weather model ('ERA5', 'ERAINT', 'HRES')
         * datatype  : reanalysis data type (an)
         * snwe      : area extent (tuple of int)
         * humidity  : humidity
@@ -40,13 +40,13 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=Non
     # Initialize
 
     # Check data
-    assert model in ('era5','interim','hres'), 'Unknown model for ECMWF'
+    assert model in ('ERA5', 'ERAINT', 'HRES'), 'Unknown model for ECMWF'
 
     # Infos for downloading
-    if model in 'interim':
+    if model in 'ERAINT':
         print('WARNING: you are downloading from the old ECMWF platform. '
               'ERA-Interim is deprecated, use ERA-5 instead.')
-    if model in 'era5':
+    if model in 'ERA5':
         print('INFO: You are using the latest ECMWF platform for downloading datasets: '
               'https://cds.climate.copernicus.eu/api/v2')
 
@@ -56,7 +56,7 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=Non
     # Humidity
     assert humidity in ('Q','R'), 'Unknown humidity field for ECMWF'
     if humidity in 'Q':
-        if model in 'era5':
+        if model in 'ERA5':
             humidparam = 'specific_humidity'
         else:
             humidparam = 133
@@ -67,9 +67,9 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=Non
             humidparam = 157
 
     # Grid size (only for HRES and ERA-Interim)
-    if model in 'hres':
+    if model in 'HRES':
         gridsize = '0.10/0.10'
-    elif model in 'interim':
+    elif model in 'ERAINT':
         gridsize = '0.75/0.75'
 
     #-------------------------------------------
@@ -77,11 +77,11 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=Non
     if not flist:
         flist = []
         for k in range(len(bdate)):
-            if model == 'era5':
+            if model == 'ERA5':
                 fname = os.path.join(filedir, 'ERA-5_{}_{}.grb'.format(day, hr))
-            elif model == 'eraint':
+            elif model == 'ERAINT':
                 fname = os.path.join(filedir, 'ERA-Int_{}_{}.grb'.format(day, hr))
-            elif model in 'hres':
+            elif model in 'HRES':
                 fname = os.path.join(filedir, 'HRES_{}_{}.grb'.format(day, hr))
             else:
                 raise ValueError('unrecognized model input: {}'.format(model))
@@ -94,7 +94,7 @@ def ECMWFdload(bdate,hr,filedir,model='era5',datatype='fc',humidity='Q',snwe=Non
 
         #-------------------------------------------
         # CASE 1: request for CDS API client (new ECMWF platform, for ERA-5)    
-        if model in 'era5':
+        if model in 'ERA5':
             url = 'https://cds.climate.copernicus.eu/api/v2'
             key = config.get('CDS', 'key')
 

@@ -143,7 +143,7 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
     Modified by A. Benoit, January 2019.
 
     Args:
-        * model       (str):  Model used (eraint, era5 or hres)
+        * model       (str):  Model used (ERA5, ERAINT or HRES)
         * fname       (str):  Path to the grib file
         * minlat (np.float):  Minimum latitude
         * maxlat (np.float):  Maximum latitude
@@ -167,7 +167,7 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
         '''
 
     assert humidity in ('Q','R'), 'Undefined humidity field in get_era.'
-    assert model in ('era5', 'eraint','hres'), 'Model not recognized.'
+    assert model in ('ERA5', 'ERAINT','HRES'), 'Model not recognized.'
     if verbose:
         print('PROGRESS: READING GRIB FILE')
     if model in 'hres':

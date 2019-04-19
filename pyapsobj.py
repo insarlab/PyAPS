@@ -23,7 +23,7 @@ class PyAPS:
     Operates on one weather model file and one Geo.rsc file at a time.'''
 
     def __init__(self, gribfile, dem, lat, lon, inc=0.0, mask=None,
-                 grib='ECMWF', humidity='Q', Del='comb', model='era5', verb=False):
+                 grib='era5', humidity='Q', Del='comb', model='ERA5', verb=False):
         '''Initiates the data structure for atmos corrections in geocoded domain.
         Args:
             * gribfile (str) : path to downloaded grib file
@@ -34,7 +34,7 @@ class PyAPS:
         Kwargs:
             * inc (number or np.array) : incidence angle (in size of (length, width) for np.array)
             * mask (np.array) : mask of valid pixels in size of (length, width)
-            * grib (str)      : grib name in ['ECMWF','ERA', 'NARR', 'MERRA']
+            * grib (str)      : grib name in ['ERA5', 'ERAINT', 'HRES', 'NARR', 'MERRA']
             * humidity (str)  : ['Q', 'R']
             * Del (str)       : ['comb', 'wet', 'dry']
             * model (str)     : ECMWF dataset name in ['era5', 'eraint', 'hres']
@@ -48,7 +48,7 @@ class PyAPS:
         #--------- Check files exist and we have what's needed for computation
         # check grib type and import module
         grib = grib.upper()
-        if grib in ['ECMWF','ERA']:
+        if grib in ['ERA5','ERAINT','HRES']:
             from pyaps3 import era
         elif grib == 'NARR':
             from pyaps3 import narr
@@ -103,7 +103,7 @@ class PyAPS:
         self.dict = processor.initconst()
 
         # Get some scales
-        if grib in ('ERA','ECMWF'):
+        if grib in ('ERA5','ERAINT','HRES'):
             self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.703
             self.bufspc = 1.2
         elif grib in ('NARR'):
@@ -134,7 +134,7 @@ class PyAPS:
                                                              self.dict,
                                                              humidity=self.humidity,
                                                              verbose=verb)
-        elif self.grib in ('ECMWF'):
+        elif self.grib in ('ERA5','ERAINT','HRES'):
             [lvls,latlist,lonlist,gph,tmp,vpr] = era.get_ecmwf(self.model,
                                                                self.gfile,
                                                                self.minlat,
