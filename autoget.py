@@ -40,7 +40,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
     # Initialize
 
     # Check data
-    assert model in ('ERA5', 'ERAINT', 'HRES'), 'Unknown model for ECMWF'
+    assert model in ('ERA5', 'ERAINT', 'HRES'), 'Unknown model for ECMWF: {}'.format(model)
 
     # Infos for downloading
     if model in 'ERAINT':
@@ -61,7 +61,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
         else:
             humidparam = 133
     elif humidity in 'R':
-        if model in 'era5':
+        if model in 'ERA5':
             humidparam = 'relative_humidity'
         else:
             humidparam = 157
@@ -77,6 +77,8 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
     if not flist:
         flist = []
         for k in range(len(bdate)):
+            day = bdate[k]
+
             if model == 'ERA5':
                 fname = os.path.join(filedir, 'ERA-5_{}_{}.grb'.format(day, hr))
             elif model == 'ERAINT':
@@ -129,7 +131,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
                 print(indict)
 
                 # Make the request
-                c.retrieve('reanalysis-{}-pressure-levels'.format(model),indict,target=fname)
+                c.retrieve('reanalysis-{}-pressure-levels'.format(model.lower()),indict,target=fname)
 
         #-------------------------------------------
         # CASE 2: request for WEB API client (old ECMWF platform, deprecated, for ERA-Int and HRES)
