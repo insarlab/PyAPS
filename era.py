@@ -91,8 +91,7 @@ def get_era(fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose=False):
     grb=grbs.read(1)[0]
     lats,lons = grb.latlons()
     g = cdic['g']    
-    mask = (lats > minlat) & (lats < maxlat) \
-    & (lons > minlon) & (lons < maxlon)
+    mask = (lats > minlat) & (lats < maxlat) & (lons > minlon) & (lons < maxlon)
     [ii,jj] = np.where(mask == True)
     del mask
     latlist = lats[ii,jj]
@@ -170,7 +169,7 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
     assert model in ('ERA5', 'ERAINT','HRES'), 'Model not recognized.'
     if verbose:
         print('PROGRESS: READING GRIB FILE')
-    if model in 'hres':
+    if model in 'HRES':
         if verbose:
             print('INFO: USING PRESSURE LEVELS OF HRES DATA')
         lvls = np.array([1, 2, 3, 5, 7, 10, 20, 30, 50, 70, 100, 150, 
@@ -191,7 +190,9 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
     grbs.seek(gphind[0])
     grb = grbs.read(1)[0]
     lats,lons = grb.latlons()
-    g = cdic['g']    
+    if model == 'ERA5':
+        lons[lons < 0.] += 360.
+    g = cdic['g']
     
     mask = ((lats > minlat) & (lats < maxlat)) & ((lons > minlon) & (lons < maxlon))
     #extrqct indices 
