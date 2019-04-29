@@ -29,10 +29,10 @@ python setup.py install
 
 ## Account setup for global atmospheric models
 ### [ERA-5](https://retostauffer.org/code/Download-ERA5/)
-ERA-5 data set is redistributed over the Copernicus Climate Data Store (CDS), [create a new account](https://cds.climate.copernicus.eu/user/register) on the CDS website if you don't own a user account yet. On the profile, you will find your user id (**UID**) and your personal **API Key** similar as below. Add the API key to your `model.cfg` file in `[CDS]` section.
+ERA-5 data set is redistributed over the Copernicus Climate Data Store (CDS), [create a new account](https://cds.climate.copernicus.eu/user/register) on the CDS website if you don't own a user account yet. On the profile, you will find your user id (**UID**) and your personal **API Key**. Add them to the `model.cfg` file in `[CDS]` section as below.
 
 ```
-key: 1234:abcdefghij-134-abcdefgadf-82391b9d3f
+key = 1234:abcdefghij-134-abcdefgadf-82391b9d3f
 ```
 
 where 1234 is your personal user ID (UID), the part behind the colon your personal API key. More details on CDSAPI can be found [here](https://cds.climate.copernicus.eu/api-how-to).
