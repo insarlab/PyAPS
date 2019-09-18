@@ -5,3 +5,5 @@
 *.nc4
 *checkpoint.ipynb
 
+examples/TestECMWF.py
+examples/multilook_geometry.ipynb
