@@ -18,7 +18,7 @@ export PYTHONPATH=${PYAPS_HOME}:${PYTHONPATH}
 Installing Python dependencies
 
 ```
-mdkir PyAPS; cd PyAPS
+mkdir PyAPS; cd PyAPS
 git clone https://github.com/AngeliqueBenoit/pyaps3.git
 
 wget https://github.com/ecmwf/cdsapi/archive/v0.1.4.tar.gz -O cdsapi-0.1.4.tar.gz
