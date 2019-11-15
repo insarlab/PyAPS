@@ -4,7 +4,6 @@ Python 3 Atmospheric Phase Screen
 This python 3 module estimates differential phase delay maps due to the stratified atmosphere for correcting radar interferograms. It is rewritten in Python 3 language from PYAPS source code and adapted for ECMWF's ERA-5 corrections. 
 
 Warning: PyAPS3 could not work with NARR and MERRA weather models. Feel free to modify these parts of the code.
-Original repo: https://github.com/AngeliqueBenoit/pyaps3.git
 
 ## Installation
 
