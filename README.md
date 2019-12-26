@@ -35,10 +35,10 @@ ERA-5 data set is redistributed over the Copernicus Climate Data Store (CDS), [c
 #####key for ECMWF in Climate Data Store Application Program Interface
 #Get it from https://retostauffer.org/code/Download-ERA5/
 [CDS]
-key = 1234:abcdefghij-134-abcdefgadf-82391b9d3f
+key = 12345:abcdefghij-134-abcdefgadf-82391b9d3f
 ```
 
-where 1234 is your personal user ID (UID), the part behind the colon your personal API key. More details on CDSAPI can be found [here](https://cds.climate.copernicus.eu/api-how-to).
+where 12345 is your personal user ID (UID), the part behind the colon your personal API key. More details on CDSAPI can be found [here](https://cds.climate.copernicus.eu/api-how-to).
 
 Run `examples/TestECMWF.ipynb` in Jupyter Notebook in your local machine to check if everything works.
 

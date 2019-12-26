@@ -7,3 +7,4 @@
 
 examples/TestECMWF.py
 examples/multilook_geometry.ipynb
+*.BK
