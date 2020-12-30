@@ -1,10 +1,10 @@
 *.pyc
+*.BK
 *.DS_Store
-*model.cfg
 *.grb
 *.nc4
-*checkpoint.ipynb
-
+*ipynb_checkpoints*
+*model.cfg
 examples/TestECMWF.py
 examples/multilook_geometry.ipynb
-*.BK
+
