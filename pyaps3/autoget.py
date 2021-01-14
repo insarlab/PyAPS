@@ -7,19 +7,23 @@
 # Contact: insar@geologie.ens.fr                           #
 ############################################################
 
-import configparser as ConfigParser
-import sys
+
 import os.path
+import sys
+import configparser
 import cdsapi
-# disable InsecureRequestWarning message from cdsapi
 import urllib3
+# disable InsecureRequestWarning message from cdsapi
 urllib3.disable_warnings()
+import pyaps3
 
 
-######Set up variables in model.cfg before using
-dpath = os.path.dirname(__file__)
-config = ConfigParser.RawConfigParser(delimiters='=')
-config.read('%s/model.cfg'%(dpath))
+# Read account setup in model.cfg before using
+cfg_file = os.path.join(os.path.dirname(pyaps3.__file__), 'model.cfg')
+if not os.path.isfile(cfg_file):
+    raise FileNotFoundError(cfg_file)
+config = configparser.RawConfigParser(delimiters='=')
+config.read(cfg_file)
 
 
 def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=None,flist=None):

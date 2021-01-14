@@ -1,7 +1,8 @@
-numpy
-scipy
-matplotlib
 cdsapi
+ecCodes
+matplotlib
+netcdf4
+numpy
 pygrib
 pyhdf
-netcdf4
+scipy
