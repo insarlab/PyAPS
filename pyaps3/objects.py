@@ -26,19 +26,19 @@ class PyAPS:
                  grib='era5', humidity='Q', Del='comb', model='ERA5', verb=False):
         '''Initiates the data structure for atmos corrections in geocoded domain.
         Args:
-            * gribfile (str) : path to downloaded grib file
-            * dem (np.array) : height    in size of (length, width)
-            * lat (np.array) : latitude  in size of (length, width)
-            * lon (np.array) : longitude in size of (length, width)
+            * gribfile (str)    : path to downloaded grib file
+            * dem (np.ndarray)  : height    in size of (length, width)
+            * lat (np.ndarray)  : latitude  in size of (length, width)
+            * lon (np.ndarray)  : longitude in size of (length, width)
 
         Kwargs:
-            * inc (number or np.array) : incidence angle (in size of (length, width) for np.array)
-            * mask (np.array) : mask of valid pixels in size of (length, width)
-            * grib (str)      : grib name in ['ERA5', 'ERAINT', 'HRES', 'NARR', 'MERRA']
-            * humidity (str)  : ['Q', 'R']
-            * Del (str)       : ['comb', 'wet', 'dry']
-            * model (str)     : ECMWF dataset name in ['era5', 'eraint', 'hres']
-            * verb (bool)     : True or False
+            * inc (number/np.ndarray) : incidence angle (in size of (length, width) for np.ndarray)
+            * mask (np.ndarray) : mask of valid pixels in size of (length, width)
+            * grib (str)        : grib name in ['ERA5', 'ERAINT', 'HRES', 'NARR', 'MERRA']
+            * humidity (str)    : ['Q', 'R']
+            * Del (str)         : ['comb', 'wet', 'dry']
+            * model (str)       : ECMWF dataset name in ['era5', 'eraint', 'hres']
+            * verb (bool)       : True or False
 
         .. note::
             For ISCE products, lat/lon can be read from lat/lon.rdr file
@@ -115,10 +115,10 @@ class PyAPS:
 
         # Problems in isce when lon and lat arrays have weird numbers
         self.lon[self.lon < 0.] += 360.0
-        self.minlon = np.nanmin(self.lon*self.mask) - self.bufspc
-        self.maxlon = np.nanmax(self.lon*self.mask) + self.bufspc
-        self.minlat = np.nanmin(self.lat*self.mask) - self.bufspc
-        self.maxlat = np.nanmax(self.lat*self.mask) + self.bufspc
+        self.minlon = np.nanmin(self.lon[self.mask]) - self.bufspc
+        self.maxlon = np.nanmax(self.lon[self.mask]) + self.bufspc
+        self.minlat = np.nanmin(self.lat[self.mask]) - self.bufspc
+        self.maxlat = np.nanmax(self.lat[self.mask]) + self.bufspc
         if verb:
             print('INFO: AREA COVERAGE IN SNWE: ({:.2f}, {:.2f}, {:.2f}, {:.2f})'.format(
                 self.maxlat, self.minlat, self.minlon, self.maxlon))
