@@ -115,10 +115,10 @@ class PyAPS:
 
         # Problems in isce when lon and lat arrays have weird numbers
         self.lon[self.lon < 0.] += 360.0
-        self.minlon = np.nanmin(self.lon[self.mask]) - self.bufspc
-        self.maxlon = np.nanmax(self.lon[self.mask]) + self.bufspc
-        self.minlat = np.nanmin(self.lat[self.mask]) - self.bufspc
-        self.maxlat = np.nanmax(self.lat[self.mask]) + self.bufspc
+        self.minlon = np.nanmin(self.lon[np.nonzero(self.mask)]) - self.bufspc
+        self.maxlon = np.nanmax(self.lon[np.nonzero(self.mask)]) + self.bufspc
+        self.minlat = np.nanmin(self.lat[np.nonzero(self.mask)]) - self.bufspc
+        self.maxlat = np.nanmax(self.lat[np.nonzero(self.mask)]) + self.bufspc
         if verb:
             print('INFO: AREA COVERAGE IN SNWE: ({:.2f}, {:.2f}, {:.2f}, {:.2f})'.format(
                 self.maxlat, self.minlat, self.minlon, self.maxlon))
