@@ -89,8 +89,8 @@ def get_era(fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose=False):
     grbs = pygrib.open(fname)
     grbs.seek(gphind[0])
     grb=grbs.read(1)[0]
-    lats,lons = grb.latlons()
-    g = cdic['g']    
+    lats, lons = grb.latlons()
+    g = cdic['g']
     mask = (lats > minlat) & (lats < maxlat) & (lons > minlon) & (lons < maxlon)
     [ii,jj] = np.where(mask == True)
     del mask
@@ -99,20 +99,20 @@ def get_era(fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose=False):
     nstn = len(ii)
     
     ####Create arrays for 3D storage
-    gph = np.zeros((nlvls, nstn))   #Potential height
+    gph = np.zeros((nlvls, nstn))     #Potential height
     tmp = gph.copy()                  #Temperature
     vpr = gph.copy()                  #Vapor pressure
     if verbose:
         print('Number of stations:', nstn)
 
-    lvls = 100.0*lvls              #Conversion to absolute pressure
+    lvls = 100.0*lvls                 #Conversion to absolute pressure
     for i in range(nlvls):
-        grbs.seek(gphind[i])   #Reading potential height.
+        grbs.seek(gphind[i])          #Reading potential height.
         grb = grbs.read(3)
         val = grb[0].values
         gph[i,:] = val[ii,jj]/g
 
-        val = grb[1].values   #Reading temperature
+        val = grb[1].values           #Reading temperature
         temp = val[ii,jj]
         tmp[i,:] = temp
 
@@ -125,7 +125,7 @@ def get_era(fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose=False):
             vpr[i,:] = temp*esat
                 
         elif humidity in ('Q'):
-            val = grb[2].values  #Specific humidity
+            val = grb[2].values       #Specific humidity
             temp = val[ii,jj]
             vpr[i,:] = temp*lvls[i]*alpha/(1+(alpha - 1)*temp)
         
@@ -138,7 +138,7 @@ def get_era(fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose=False):
 
 ########Read in ERA data from a given ERA Interim file##################
 def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose=False):
-    '''Read data from ERA Interim, ERA-5 or HRES grib file. Note that Lon values should be between [0-360].
+    '''Read data from ERA Interim, ERA-5 or HRES grib file. Note that Lon values should be between [-180, 180].
     Modified by A. Benoit, January 2019.
 
     Args:
@@ -189,19 +189,18 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
     grbs = pygrib.open(fname)
     grbs.seek(gphind[0])
     grb = grbs.read(1)[0]
-    lats,lons = grb.latlons()
-    if model == 'ERA5':
-        lons[lons < 0.] += 360.
+    lats, lons = grb.latlons()
+    #if model == 'ERA5':
+    #    lons[lons < 0.] += 360.
     g = cdic['g']
-    
+
+    #extract indices 
     mask = ((lats > minlat) & (lats < maxlat)) & ((lons > minlon) & (lons < maxlon))
-    #extrqct indices 
     uu = [i for i in list(range(np.shape(mask)[0])) if any(mask[i,:])]
     vv = [j for j in list(range(np.shape(mask)[1])) if any(mask[:,j])]
     
     latlist = lats[uu,:][:,vv]
     lonlist = lons[uu,:][:,vv]
-    #nstn = len(lat.flatten())
     nlat, nlon = latlist.shape
 
     ####Create arrays for 3D storage

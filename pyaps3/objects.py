@@ -103,18 +103,21 @@ class PyAPS:
         self.dict = processor.initconst()
 
         # Get some scales
-        if grib in ('ERA5','ERAINT','HRES'):
+        if self.grib in ('ERA5','ERAINT','HRES'):
             self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.703
             self.bufspc = 1.2
-        elif grib in ('NARR'):
+        elif self.grib in ('NARR'):
             self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.3
             self.bufspc = 1.2
-        elif grib in ('MERRA'):
+        elif self.grib in ('MERRA'):
             self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.5
             self.bufspc = 1.0 
 
         # Problems in isce when lon and lat arrays have weird numbers
-        self.lon[self.lon < 0.] += 360.0
+        if self.grib in ('ERA5','ERAINT','HRES'):
+            self.lon[self.lon > 180.] -= 360.
+        else:
+            self.lon[self.lon < 0.] += 360.0
         self.minlon = np.nanmin(self.lon[np.nonzero(self.mask)]) - self.bufspc
         self.maxlon = np.nanmax(self.lon[np.nonzero(self.mask)]) + self.bufspc
         self.minlat = np.nanmin(self.lat[np.nonzero(self.mask)]) - self.bufspc
@@ -288,8 +291,11 @@ class PyAPS:
             loni = self.lon[m,:]*self.mask[m,:]
 
             # Remove negative values
-            loni[loni<0.] += 360.
-            
+            if self.grib in ('ERA5','ERAINT','HRES'):
+                loni[loni > 180.] -= 360.
+            else:
+                loni[loni < 0.] += 360.
+
             # Remove NaN values
             ii = np.where(np.isnan(lati))
             jj = np.where(np.isnan(loni))
@@ -322,132 +328,3 @@ class PyAPS:
         # All done
         return
 
-        #######################################################################################
-        # WRITE STATIONS INFOS TO FILE 
-
-        #if writeStations:
-        #    stations_latfile = os.path.join(os.path.dirname(self.gfile),'latStations.txt')
-        #    stations_lonfile = os.path.join(os.path.dirname(self.gfile),'lonStations.txt')
-        #    if self.verb:
-        #        print('SAVING STATIONS LATITUDES in: {}'.format(stations_latfile))
-        #        print('SAVING STATIONS LONGITUDES in: {}'.format(stations_lonfile))
-        #    np.savetxt(stations_latfile, self.latlist, fmt=['%1.2f'])
-        #    np.savetxt(stations_lonfile, self.lonlist, fmt=['%1.2f'])
-
-        #    for station in range(0,len(self.lonlist)):
-        #        # Open file output
-        #        sfile = 'station{}_{}.txt'.format(station, 
-        #                    os.path.splitext(os.path.basename(self.gfile))[0])
-        #        stationFile = os.path.join(os.path.dirname(self.gfile), sfile)
-        #        myfile = open(stationFile, 'w')
-        #        # Iterate over altitude level
-        #        for i in range(self.Delfn_1m.shape[0]):
-        #            altitudeValue = kh[i]
-        #            phaseValue = self.Delfn_1m[i,:,:].flatten()[station]
-        #            # Write file
-        #            myfile.write("{} {}\n".format(altitudeValue, phaseValue))
-        #        myfile.close()
-        #
-        #    # Save kh into file
-        #    khfile = os.path.join(os.path.dirname(self.gfile), 'kh.txt')
-        #    np.savetxt(khfile, kh, newline='\n', fmt="%s")
-
-        ########################################################################################
-        ## CUBIC INTERPOLATION 
-
-        ## Create bicubic interpolator
-        #if self.verb:
-        #    print('PROGRESS: CREATE THE CUBIC INTERPOLATION FUNCTION')
-
-        ## Resize
-        #lonn, hgtn = np.meshgrid(self.lonlist, self.hgt)
-        #latn, hgtn = np.meshgrid(self.latlist, self.hgt)
-
-        ## Define a cubic interpolating function on the 3D grid: ((x, y, z), data)
-        #cubicint = si.Rbf(lonn.flatten(), latn.flatten(), hgtn.flatten(), self.Delfn.flatten(),kind='cubic',fill_value = 0.0)
-
-        ## Show progress bar
-        #if self.verb:
-        #    toto = utils.ProgressBar(maxValue=self.ny)
-        #    print('PROGRESS: MAPPING THE DELAY')
-
-        ## Loop on the lines
-        #for m in range(self.ny):
-
-        #    # Update progress bar
-        #    if self.verb:
-        #        toto.update(m+1, every=5)
-
-        #    ###############################################
-        #    ## Get values of the m line
-
-        #    ## Longitude
-        #    #print(self.lonlist.shape)
-        #    #Lonu = np.unique(self.lonlist)
-        #    #nLon = len(Lonu)
-        #    #lonlisti = Lonu
-
-        #    ## Latitude by iterating over self.latlist
-        #    #if m == 0:
-        #    #    pos1 = 0
-        #    #    pos2 = nLon
-        #    #else:
-        #    #    pos1 = pos1 + nLon
-        #    #    pos2 = pos2 + nLon
-        #    #lonlisti = Lonu
-        #    #latlisti = self.latlist[pos1:pos2]
-
-        #    ## Height
-        #    #hgtlisti = self.hgt
-        #    #
-        #    ## Delay by iterating over self.Delfn
-        #    #print(self.Delfn.shape)
-        #    #Delfni = (self.Delfn[pos1:pos2,:]).T
-
-        #    ###############################################
-        #    ## Define a cubic interpolating function on the 3D grid: ((x, y, z), data)
-        #    #
-        #    #lonn, hgtn = np.meshgrid(lonlisti, hgtlisti)
-        #    #latn, hgtn = np.meshgrid(latlisti, hgtlisti)
-        #    #cubicint = si.Rbf(lonn.flatten(), latn.flatten(), hgtn.flatten(), Delfni.flatten(), kind='cubic',fill_value = 0.0)
-        #    #
-        #    ###############################################
-
-        #    # Get latitude and longitude arrays
-        #    lati = self.lat[m,:]*self.mask[m,:]
-        #    loni = self.lon[m,:]*self.mask[m,:]
-
-        #    # Remove negative values
-        #    loni[loni<0.] += 360.
-        #    
-        #    # Remove NaN values
-        #    ii = np.where(np.isnan(lati))
-        #    jj = np.where(np.isnan(loni))
-        #    xx = np.union1d(ii,jj)
-        #    lati[xx]=0.0
-        #    loni[xx]=0.0
-
-        #    # Get incidence if file provided
-        #    if incFileFlag=='array':
-        #        cinc = np.cos(self.mask[m,:]*self.inc[m,:]*np.pi/180.)
-
-        #    # Make the interpolation
-        #    hgti = self.dem[m,:]
-        #    val = cubicint(loni.flatten(), lati.flatten(), hgti.flatten())
-        #    val[xx] = np.nan
-
-        #    # Write outfile
-        #    if outFile:
-        #       resy = val.astype(np.float32)
-        #       resy.tofile(fout)
-        #    else:
-        #        dataobj[m,:] = val
-
-        #if self.verb:
-        #    toto.close()
-
-        #if outFile:
-        #    fout.close()
-
-        ## All done
-        #return
