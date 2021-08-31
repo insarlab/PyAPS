@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pyaps3',
-    version='1.0',
+    version='0.2.0',
     description="Python based Atmospheric Phase Screen Estimation",
     url="https://github.com/AngeliqueBenoit/pyaps3",
     author="Angelique Benoit, Romain Jolivet",
