@@ -12,14 +12,15 @@ from setuptools import setup, find_packages
 
 setup(
     name='pyaps3',
-    version='0.2.0',
+    version='0.2.1',
     description="Python based Atmospheric Phase Screen Estimation",
-    url="https://github.com/AngeliqueBenoit/pyaps3",
-    author="Angelique Benoit, Romain Jolivet",
+    url="https://github.com/insarlab/pyaps3",
+    author="Romain Jolivet, Angelique Benoit",
     author_email="insar@geologie.ens.fr",
 
     # package discovery
-    packages=find_packages(),
+    packages=find_packages("src"),  # include all packages under src
+    package_dir={"": "src"},        # tell distutils packages are under src
 
     # dependencies
     install_requires=[
@@ -29,12 +30,11 @@ setup(
         'netcdf4',
         'numpy',
         'pygrib',
-        #'pyhdf',   #for MERRA
+        # 'pyhdf',   #for MERRA
         'scipy',
     ],
 
     # data files
     include_package_data=True,
-    package_data={'': ['*.cfg']},
-
+    package_data={"pysolid": ["*.cfg"]},
 ) 
