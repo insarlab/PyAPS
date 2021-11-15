@@ -2,51 +2,60 @@
 
 This python 3 module estimates differential phase delay maps due to the stratified atmosphere for correcting radar interferograms. It is rewritten in Python 3 language from PYAPS source code and adapted for ECMWF's ERA-5 corrections. 
 
-WARNING: PyAPS3 could not work with NARR and MERRA weather models. Feel free to modify these parts of the code.
+WARNING: PyAPS3 could not work with NARR and MERRA weather models. Contributions are welcomed.
+
+This is research code provided to you "as is" with NO WARRANTIES OF CORRECTNESS. Use at your own risk.
 
 ### 1. Installation
 
-#### via pip
+`pyaps3` is available on the `conda-forge` channel and PyPI. The released version can be installed via `conda` as:
 
 ```bash
-pip install git+https://github.com/yunjunz/PyAPS.git
+conda install -c conda-forge pyaps3
 ```
 
-#### via conda
+or via `pip` as:
 
 ```bash
-# download source code
-cd ~/tools
-git clone https://github.com/yunjunz/PyAPS.git
-
-# install dependencies
-conda install --file PyAPS/requirements.txt
+pip install pyaps3
 ```
 
-Add the following variables in your source file (**_~/.bash_profile_** for _bash_ users or **_~/.cshrc_** for _csh/tcsh_ users).
+One could also installed the development version via `pip` as:
 
 ```bash
-export PYTHONPATH=${PYTHONPATH}:~/tools/PyAPS
+pip install git+https://github.com/insarlab/PyAPS.git
 ```
 
-### 2. Account setup for global atmospheric models
+Run the following to 
 
-#### [ERA-5](https://retostauffer.org/code/Download-ERA5/)
-ERA-5 data set is redistributed over the Copernicus Climate Data Store (CDS), [create a new account](https://cds.climate.copernicus.eu/user/register) on the CDS website if you don't own a user account yet. On the profile, you will find your user id (**UID**) and your personal **API Key**. Add the key to the `model.cfg` file as below:
+### 2. Account setup for [ERA5](https://retostauffer.org/code/Download-ERA5/)
 
+ERA5 data set is redistributed over the Copernicus Climate Data Store (CDS). Registration is required for the data downloading.
+
++ [Create a new account](https://cds.climate.copernicus.eu/user/register) on the CDS website if you don't own a user account yet. 
++ Create local key file. Create a file named `.cdsapirc` in your home directory and add the following two lines:
+
+```shell
+url: https://cds.climate.copernicus.eu/api/v2
+key: 12345:abcdefghij-134-abcdefgadf-82391b9d3f
 ```
-#####key for ECMWF in Climate Data Store Application Program Interface
-#Get it from https://retostauffer.org/code/Download-ERA5/
-[CDS]
-key = 12345:abcdefghij-134-abcdefgadf-82391b9d3f
+
+where 12345 is your personal user ID (UID), the part behind the colon is your personal API key. More details can be found [here](https://cds.climate.copernicus.eu/api-how-to).
+
++ **Make sure** that you accept the data license in the Terms of use on ECMWF website.
+
+### 3. Testing
+
+Run the following to test the installation and account setup:
+
+```bash
+git clone https://github.com/insarlab/PyAPS.git --depth 1
+python PyAPS/tests/test_dload.py
+python PyAPS/tests/test_calc.py
 ```
 
-where 12345 is your personal user ID (UID), the part behind the colon your personal API key. More details on CDSAPI can be found [here](https://cds.climate.copernicus.eu/api-how-to).
+### 4. Citing this work
 
-Run `examples/TestECMWF.ipynb` in Jupyter Notebook in your local machine to check if everything works.
-
-### 3. Citing this work
 The metholody and validation of DelayPackage can be found in:
-+ Jolivet, R., R. Grandin, C. Lasserre, M.-P. Doin and G. Peltzer (2011), Systematic InSAR tropospheric phase delay corrections from global meteorological reanalysis data, Geophys. Res. Lett., 38, L17311, doi:10.1029/2011GL048757.
 
-Examples in the example directory.
++ Jolivet, R., R. Grandin, C. Lasserre, M.-P. Doin and G. Peltzer (2011), Systematic InSAR tropospheric phase delay corrections from global meteorological reanalysis data, Geophys. Res. Lett., 38, L17311, doi:10.1029/2011GL048757.
