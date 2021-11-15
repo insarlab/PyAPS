@@ -6,17 +6,38 @@
 # Ecole Normale Superieure, Paris                          #
 # Contact: insar@geologie.ens.fr                           #
 ############################################################
+# Add more utils functions, Zhang Yunjun, April 2019
+#     get_lat_lon()
+#     read_(meta)data()
+#     read_isce_xml/data/lalo_ref()
+#     read_roipac_data/rsc()
 
 
 import os
 import sys
 import time
 import numpy as np
-import matplotlib.pyplot as plt
-import xml.etree.ElementTree as ET
 
 
-###############Read ISCE / ROIPAC file###############
+
+def snwe2str(snwe):
+    """Get area extent in string"""
+    if not snwe:
+        return None
+    s, n, w, e = snwe
+
+    area = ''
+    area += '_S{}'.format(abs(s)) if s < 0 else '_N{}'.format(abs(s))
+    area += '_S{}'.format(abs(n)) if n < 0 else '_N{}'.format(abs(n))
+    area += '_W{}'.format(abs(w)) if w < 0 else '_E{}'.format(abs(w))
+    area += '_W{}'.format(abs(e)) if e < 0 else '_E{}'.format(abs(e))
+
+    return area
+
+
+
+############### Read ISCE / ROIPAC file ###############
+
 def get_lat_lon(metafile):
     """Get 2D lat and lon from rsc/xml file
     Args:
@@ -146,6 +167,7 @@ def read_isce_xml(xmlfile):
     """Read ISCE XML file into dict.
     Add from PySAR/pysar/utils/readfile.py by Zhang Yunjun
     """
+    import xml.etree.ElementTree as ET
     meta = {}
     root = ET.parse(xmlfile).getroot()
     if root.tag.startswith('image'):
@@ -275,10 +297,13 @@ def read_roipac_data(fname):
     data = np.fromfile(fname, dtype=data_type, count=length*width*num_band).reshape(-1, width*num_band)
     data = data[:, width*(band-1):width*band]
     return data
-###############Read ISCE / ROIPAC file - end###############
+
+############### Read ISCE / ROIPAC file - end #########
 
 
-###############Reading input RSC file for radar###############
+
+############### obsolete: RSC for radar ###############
+
 def rd_rsc(inname,full=False,verbose=False):
     '''Reading a ROI-PAC style RSC file.
 
@@ -390,10 +415,12 @@ def geo_rsc(inname,full=False,verbose=False):
     else:
         return lon,lat,nx,ny
 
-#######################Finished geo_rsc###########################
+############### obsolete: RSC for radar - end #########
 
 
-##########Conversion from Geo coordinate to Radar coordinates######
+
+############### obsolete: simple geo2radar ############
+
 def lonlat2rdr(lon, lat, lonlist, latlist, plotflag=False):
     '''
     Transfer the lat lon coordinates of the weather stations into the index
@@ -436,7 +463,7 @@ def lonlat2rdr(lon, lat, lonlist, latlist, plotflag=False):
     
     # Plot y/n
     if plotflag:
-        import matplotlib.patches as ptch
+        from matplotlib import pyplot as plt, patches
 
         plt.figure()
         plt.subplot(211)
@@ -450,7 +477,7 @@ def lonlat2rdr(lon, lat, lonlist, latlist, plotflag=False):
 
         plt.subplot(212)
         plt.scatter(xi,yi,s=8,c=np.cumsum(np.ones(len(lonlist),)))
-        p = ptch.Rectangle((1,1),lon.shape[1],lon.shape[0],
+        p = patches.Rectangle((1,1),lon.shape[1],lon.shape[0],
                                  edgecolor="Red",fill=False)
         plt.gca().add_patch(p)
         plt.title('Area of interest in Radar Geometry')
@@ -460,6 +487,7 @@ def lonlat2rdr(lon, lat, lonlist, latlist, plotflag=False):
 
     # All done
     return np.array(xi).astype(float), np.array(yi).astype(float)
+
 
 def glob2rdr(nx,ny,lat,lon,latl,lonl,plotflag='n'):
     '''Transfert these latlon coordinates into radar geometry (xi,yi) with a 
@@ -502,6 +530,8 @@ def glob2rdr(nx,ny,lat,lon,latl,lonl,plotflag='n'):
     yi = np.dot(A,mfcn[:,1]).reshape(latl.shape)
 
     if plotflag in ('y','Y'):
+        from matplotlib import pyplot as plt, patches
+
         plt.figure(1)
         plt.subplot(211)
         plt.scatter(lonl,latl,s=8,c='k');
@@ -514,8 +544,7 @@ def glob2rdr(nx,ny,lat,lon,latl,lonl,plotflag='n'):
 
         plt.subplot(212)
         plt.scatter(xi,yi,s=8,c='k')
-        import matplotlib.patches as ptch
-        p = ptch.Rectangle((1,1),nx,ny,edgecolor="Red",fill=False)
+        p = patches.Rectangle((1,1),nx,ny,edgecolor="Red",fill=False)
         plt.gca().add_patch(p)
         plt.title('Area of interest in Radar Geometry')
         plt.xlabel('Range')
@@ -523,9 +552,13 @@ def glob2rdr(nx,ny,lat,lon,latl,lonl,plotflag='n'):
         plt.show()
 
     return xi,yi
-#################Completed transforming geo 2 radar##################
 
-##########Conversion from Geo coordinate to Radar coordinates######
+############### obsolete: simple geo2radar - end ######
+
+
+
+############### obsolete: simple radar2geo ############
+
 def rdr2glob(wid,lgt,lat,lon,x,y,plotflag='n'):   #nx,ny,lat,lon,latl,lonl,plotflag='n'):
     '''Transfert these radar geometry (x,y) coordinates in lat/lon coordinates with a 
     simple linear transformation given the image width/length and the lat/lon coordinates
@@ -566,6 +599,8 @@ def rdr2glob(wid,lgt,lat,lon,x,y,plotflag='n'):   #nx,ny,lat,lon,latl,lonl,plotf
     loni = np.dot(A,mfcn[:,1])
 
     if plotflag in ('y','Y'):
+        from matplotlib import pyplot as plt, patches
+
         plt.figure(1)
         plt.subplot(211)
         plt.scatter(lon,lat,s=8,c='k');
@@ -579,8 +614,7 @@ def rdr2glob(wid,lgt,lat,lon,x,y,plotflag='n'):   #nx,ny,lat,lon,latl,lonl,plotf
 
         plt.subplot(212)
         plt.scatter(x,y,s=8,c='k')
-        import matplotlib.patches as ptch
-        p = ptch.Rectangle((1,1),wid,lgt,edgecolor="Red",fill=False)
+        p = patches.Rectangle((1,1),wid,lgt,edgecolor="Red",fill=False)
         plt.gca().add_patch(p)
         plt.title('Area of interest in Radar Geometry')
         plt.xlabel('Range')
@@ -588,10 +622,13 @@ def rdr2glob(wid,lgt,lat,lon,x,y,plotflag='n'):   #nx,ny,lat,lon,latl,lonl,plotf
         plt.show()
 
     return loni,lati
-#################Completed transforming geo 2 radar##################
+
+############### obsolete: simple radar2geo - end ######
 
 
-###########################Simple progress bar######################
+
+############### Simple progress bar ###################
+
 class ProgressBar:
     """ Creates a text-based progress bar. Call the object with 
     the simple `print'command to see the progress bar, which looks 
@@ -669,4 +706,4 @@ class ProgressBar:
         of future statements."""
         print(' ')
 
-################################End of progress bar class####################################
+############### Simple progress bar - end #############
