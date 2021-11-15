@@ -12,7 +12,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pyaps3',
-    version='0.2.1',
+    version='0.3.0',
     description="Python based Atmospheric Phase Screen Estimation",
     url="https://github.com/insarlab/pyaps3",
     author="Romain Jolivet, Angelique Benoit",
@@ -25,13 +25,12 @@ setup(
     # dependencies
     install_requires=[
         'cdsapi',
-        'ecCodes',
         'matplotlib',
-        'netcdf4',
         'numpy',
         'pygrib',
-        # 'pyhdf',   #for MERRA
         'scipy',
+        # 'netcdf4', #for MERRA, which is currently not supported
+        # 'pyhdf',   #for MERRA, which is currently not supported
     ],
 
     # data files
