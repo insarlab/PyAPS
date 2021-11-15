@@ -15,15 +15,15 @@ import cdsapi
 import urllib3
 # disable InsecureRequestWarning message from cdsapi
 urllib3.disable_warnings()
-import pyaps3
+import pyaps3 as pa
 
 
 # Read account setup in model.cfg before using
-cfg_file = os.path.join(os.path.dirname(pyaps3.__file__), 'model.cfg')
-if not os.path.isfile(cfg_file):
-    raise FileNotFoundError(cfg_file)
-config = configparser.RawConfigParser(delimiters='=')
-config.read(cfg_file)
+config = None
+cfg_file = os.path.join(os.path.dirname(pa.__file__), 'model.cfg')
+if os.path.isfile(cfg_file):
+    config = configparser.RawConfigParser(delimiters='=')
+    config.read(cfg_file)
 
 
 def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=None,flist=None):
@@ -39,7 +39,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
         * snwe      : area extent (tuple of int)
         * humidity  : humidity
     '''
-    
+
     #-------------------------------------------
     # Initialize
 
@@ -79,18 +79,20 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
     #-------------------------------------------
     # file name
     if not flist:
-        flist = []
-        for k in range(len(bdate)):
-            day = bdate[k]
+        prefix_dict = {
+            'ERA5'   : 'ERA5',
+            'ERAINT' : 'ERAI',
+            'HRES'   : 'HRES',
+        }
+        if model not in prefix_dict.keys():
+            raise ValueError('unrecognized model input: {}'.format(model))
+        fbase = os.path.join(filedir, prefix_dict[model])
 
-            if model == 'ERA5':
-                fname = os.path.join(filedir, 'ERA-5_{}_{}.grb'.format(day, hr))
-            elif model == 'ERAINT':
-                fname = os.path.join(filedir, 'ERA-Int_{}_{}.grb'.format(day, hr))
-            elif model in 'HRES':
-                fname = os.path.join(filedir, 'HRES_{}_{}.grb'.format(day, hr))
-            else:
-                raise ValueError('unrecognized model input: {}'.format(model))
+        flist = []
+        for day in bdate:
+            fname = fbase
+            fname += pa.utils.snwe2str(snwe) if snwe is not None else ''
+            fname += '_{}_{}.grb'.format(day, hr)
             flist.append(fname)
 
     # Iterate over dates
@@ -99,13 +101,16 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
         fname = flist[k]
 
         #-------------------------------------------
-        # CASE 1: request for CDS API client (new ECMWF platform, for ERA-5)    
+        # CASE 1: request for CDS API client (new ECMWF platform, for ERA5)    
         if model in 'ERA5':
-            url = 'https://cds.climate.copernicus.eu/api/v2'
-            key = config.get('CDS', 'key')
-
             # Contact the server
-            c = cdsapi.Client(url=url, key=key)
+            rc_file = os.path.expanduser('~/.cdsapirc')
+            if os.path.isfile(rc_file):
+                c = cdsapi.Client()
+            else:
+                url = 'https://cds.climate.copernicus.eu/api/v2'
+                key = config.get('CDS', 'key')
+                c = cdsapi.Client(url=url, key=key)
 
             # Pressure levels
             pressure_lvls = ['1','2','3','5','7','10','20','30','50', 
@@ -141,7 +146,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
         # CASE 2: request for WEB API client (old ECMWF platform, deprecated, for ERA-Int and HRES)
         else:
             # Contact the server
-            from pyaps3.ecmwfapi import ECMWFDataServer
+            from pa.ecmwfapi import ECMWFDataServer
             url = "https://api.ecmwf.int/v1"
             emid = config.get('ECMWF', 'email')
             key = config.get('ECMWF', 'key')
