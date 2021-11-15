@@ -4,6 +4,4 @@
 *.grb
 *.nc4
 *ipynb_checkpoints*
-examples/TestECMWF.py
-examples/multilook_geometry.ipynb
 
