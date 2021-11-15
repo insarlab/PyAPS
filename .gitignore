@@ -4,4 +4,7 @@
 *.grb
 *.nc4
 *ipynb_checkpoints*
+build/
+dist/
+src/*.egg-info/
 
