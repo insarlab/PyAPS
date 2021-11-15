@@ -4,5 +4,5 @@ matplotlib
 netcdf4
 numpy
 pygrib
-pyhdf    #for MERRA
+# pyhdf    #for MERRA
 scipy
