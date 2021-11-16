@@ -2,7 +2,7 @@
 
 This python 3 module estimates differential phase delay maps due to the stratified atmosphere for correcting radar interferograms. It is rewritten in Python 3 language from PYAPS source code and adapted for ECMWF's ERA-5 corrections. 
 
-WARNING: The current version could not work with NARR and MERRA weather models. Contributions are welcomed.
+WARNING: The current version does not work with NARR and MERRA datasets. Contributions are welcomed.
 
 This is research code provided to you "as is" with NO WARRANTIES OF CORRECTNESS. Use at your own risk.
 
