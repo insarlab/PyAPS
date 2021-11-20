@@ -29,12 +29,7 @@ grb_file1 = os.path.join(data_dir, 'ERA5/ERA5_N30_N40_E120_E140_20101017_14.grb'
 grb_file2 = os.path.join(data_dir, 'ERA5/ERA5_N30_N40_E120_E140_20110117_14.grb')
 obj1 = pa.PyAPS(grb_file1, dem=dem, inc=inc, lat=lat, lon=lon, grib='ERA5', verb=True)
 obj2 = pa.PyAPS(grb_file2, dem=dem, inc=inc, lat=lat, lon=lon, grib='ERA5', verb=True)
-
-phs1 = np.zeros((obj1.ny, obj1.nx), dtype=np.float32)
-phs2 = np.zeros((obj2.ny, obj2.nx), dtype=np.float32)
-obj1.getdelay(phs1)
-obj2.getdelay(phs2)
-phs = phs2 - phs1
+phs = obj2.getdelay() - obj1.getdelay()
 
 # plot
 date12 = '{}_{}'.format(grb_file1.split('_')[-2], grb_file2.split('_')[-2])

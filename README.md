@@ -20,10 +20,26 @@ or via `pip` as:
 pip install pyaps3
 ```
 
-One could also install the development version via `pip` as:
+#### Build from source
+
+The development version can be installed via `pip` as:
 
 ```bash
 pip install git+https://github.com/insarlab/PyAPS.git
+```
+
+Or build from source manually as:
+
+```bash
+git clone https://github.com/insarlab/PyAPS.git
+conda install -c conda-forge --file PyAPS/requirements.txt
+python -m pip install -e PyAPS
+```
+
+Test the installation by running:
+
+```bash
+python PyAPS/tests/test_calc.py
 ```
 
 ### 2. Account setup for [ERA5](https://retostauffer.org/code/Download-ERA5/)
@@ -42,17 +58,14 @@ where 12345 is your personal user ID (UID), the part behind the colon is your pe
 
 + **Make sure** that you accept the data license in the Terms of use on ECMWF website.
 
-### 3. Testing
-
-Run the following to test the installation and account setup:
++ Test the account setup by running:
 
 ```bash
 git clone https://github.com/insarlab/PyAPS.git --depth 1
 python PyAPS/tests/test_dload.py
-python PyAPS/tests/test_calc.py
 ```
 
-### 4. Citing this work
+### 3. Citing this work
 
 The methodology and validation can be found in:
 

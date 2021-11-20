@@ -129,13 +129,13 @@ def read_metadata(fname, latfile=None, lonfile=None, full=False, verbose=False):
 
         # default latfile
         if not latfile:
-            latfile = os.path.join(os.path.dirname(xmlfile),'lat.rdr')
+            latfile = os.path.join(os.path.dirname(fname),'lat.rdr')
             if not os.path.isfile(latfile):
                 raise FileNotFoundError("No latitude file found in ISCE style!")
 
         # default lonfile
         if not lonfile:
-            lonfile = os.path.join(os.path.dirname(xmlfile),'lon.rdr')
+            lonfile = os.path.join(os.path.dirname(fname),'lon.rdr')
             if not os.path.isfile(lonfile):
                 raise FileNotFoundError("No longitude file found in ISCE style!")
 
@@ -154,8 +154,8 @@ def read_metadata(fname, latfile=None, lonfile=None, full=False, verbose=False):
     lon[2] = float(meta['LON_REF3'])
     lat[3] = float(meta['LAT_REF4'])
     lon[3] = float(meta['LON_REF4'])
-    rgpix = 90.0  #following rd_rsc()
-    azpix = 90.0  #following rd_rsc()
+    rgpix = 90.0
+    azpix = 90.0
     dpix = np.sqrt(6.25*rgpix*rgpix + azpix*azpix)
     if full:
         return lon,lat,nx,ny,dpix,meta
@@ -184,8 +184,8 @@ def read_isce_xml(xmlfile):
                 v_step  = float(child.find("./property[@name='delta']").find('value').text)
                 v_first = float(child.find("./property[@name='startingvalue']").find('value').text)
                 if abs(v_step) < 1. and abs(v_step) > 1e-7:
-                    xmlDict['{}_STEP'.format(prefix)] = v_step
-                    xmlDict['{}_FIRST'.format(prefix)] = v_first - v_step / 2.
+                    meta['{}_STEP'.format(prefix)] = v_step
+                    meta['{}_FIRST'.format(prefix)] = v_first - v_step / 2.
 
     # convert key name from isce to roipac
     isce2roipacKeyDict = {

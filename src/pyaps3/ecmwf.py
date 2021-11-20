@@ -31,8 +31,6 @@ class ECMWFDataServer:
         response = urllib.request.urlopen(req)
 
         json = response.read();
-
-        undef = None;
         json = eval(json)
 
         if json != None:
@@ -97,7 +95,7 @@ class ECMWFDataServer:
     def _transfer(self,url,path):
         result =  urllib.request.urlretrieve(url,path)
         return long(result[1]['content-length'])
-        
+
     def _bytename(self,size):   
         next = {'':'K','K':'M','M':'G','G':'T','T':'P'}
         l    = ''
