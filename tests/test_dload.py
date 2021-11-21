@@ -2,7 +2,6 @@
 # Author: Zhang Yunjun, Nov 15, 2021
 
 
-import os
 import pyaps3 as pa
 
 print('------------------------------------------------')

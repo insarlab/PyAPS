@@ -9,7 +9,6 @@
 
 
 import os.path
-import sys
 import configparser
 import cdsapi
 import urllib3
@@ -60,15 +59,9 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
     # Humidity
     assert humidity in ('Q','R'), 'Unknown humidity field for ECMWF'
     if humidity in 'Q':
-        if model in 'ERA5':
-            humidparam = 'specific_humidity'
-        else:
-            humidparam = 133
+        humidparam = 'specific_humidity' if model == 'ERA5' else 133
     elif humidity in 'R':
-        if model in 'ERA5':
-            humidparam = 'relative_humidity'
-        else:
-            humidparam = 157
+        humidparam = 'relative_humidity' if model == 'ERA5' else 157
 
     # Grid size (only for HRES and ERA-Interim)
     if model in 'HRES':
@@ -96,9 +89,8 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
             flist.append(fname)
 
     # Iterate over dates
-    for k in range(len(bdate)):
-        day = bdate[k]
-        fname = flist[k]
+    for i, day in enumerate(bdate):
+        fname = flist[i]
 
         #-------------------------------------------
         # CASE 1: request for CDS API client (new ECMWF platform, for ERA5)    
@@ -113,7 +105,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
                 c = cdsapi.Client(url=url, key=key)
 
             # Pressure levels
-            pressure_lvls = ['1','2','3','5','7','10','20','30','50', 
+            pressure_lvls = ['1','2','3','5','7','10','20','30','50',
                             '70','100','125','150','175','200','225',
                             '250','300','350','400','450','500','550',
                             '600','650','700','750','775','800','825',
@@ -136,7 +128,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
 
             # Assert grib file not yet downloaded
             if not os.path.exists(fname):
-                print('Downloading %d of %d: %s '%(k+1,len(bdate), fname))
+                print('Downloading %d of %d: %s '%(i+1, len(bdate), fname))
                 print(indict)
 
                 # Make the request
@@ -163,10 +155,10 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
                       'grid'     : '{}'.format(gridsize),
                       'param'    : '129/130/{}'.format(humidparam),
                       'target'   : '{}'.format(fname)}
-            
+
             # Assert grib file not yet downloaded
             if not os.path.exists(fname):
-                print('Downloading %d of %d: %s '%(k+1,len(bdate),fname))
+                print('Downloading %d of %d: %s '%(i+1,len(bdate),fname))
                 print(indict)
 
                 # Make the request
@@ -185,14 +177,13 @@ def MERRAdload(bdate,hr,filedir, hdf=False):
         print('create foler: {}'.format(filedir))
 
     flist = []
-    for i in range(len(bdate)):
-        date = bdate[i]
+    for i, date in enumerate(bdate):
         filename = '%s/merra-%s-%s.nc4' %(filedir,date,hr)
         flist.append(filename)
         print('Downloading %d of %d: %s'%((i+1),len(bdate),filename))
+
         yr = date[0:4]
         mon = date[4:6]
-        hr = hr
         year = int(yr)
         url1 = 'http://goldsmr5.gesdisc.eosdis.nasa.gov/daac-bin/OTF/'
         url1 += 'HTTP_services.cgi?FILENAME=%2Fdata%2Fs4pa%2FMERRA2%2FM2I6NPANA.5.12.4%2F'
@@ -219,7 +210,7 @@ def MERRAdload(bdate,hr,filedir, hdf=False):
         dir = '%s' %(filename)
                 
         if not os.path.exists(dir):
-            #urllib.urlretrieve(weburl,dir)
+            #urllib3.urlretrieve(weburl,dir)
             dloadCmd = 'wget "{}" --user {} --password {} -O {}'.format(weburl, user, pw, filename)
             dloadCmd += ' --load-cookies ~/.urs_cookies --save-cookies ~/.urs_cookies'
             dloadCmd += ' --auth-no-challenge=on --keep-session-cookies'
@@ -234,16 +225,15 @@ def NARRdload(bdate,hr,filedir):
         print('create foler: {}'.format(filedir))
 
     flist = []      
-    for k in range(len(bdate)):
-            day = bdate[k]
-            webdir = day[0:6]
-            fname = 'narr-a_221_%s_%s00_000.grb'%(day,hr)
-            flist.append('%s/%s'%(filedir,fname))
-            weburl='http://nomads.ncdc.noaa.gov/data/narr/%s/%s/%s'%(webdir,day,fname)
-            dname = '%s/%s'%(filedir,fname)
-            print('Downloading %d of %d: %s'%(k+1,len(bdate),fname))
-            if not os.path.exists(dname):
-                    urlretrieve(weburl,dname) #,reporthook)
+    for i, day in enumerate(bdate):
+        webdir = day[0:6]
+        fname = 'narr-a_221_%s_%s00_000.grb'%(day,hr)
+        flist.append('%s/%s'%(filedir,fname))
+        weburl='http://nomads.ncdc.noaa.gov/data/narr/%s/%s/%s'%(webdir,day,fname)
+        dname = '%s/%s'%(filedir,fname)
+        print('Downloading %d of %d: %s'%(i+1,len(bdate),fname))
+        if not os.path.exists(dname):
+            urllib3.urlretrieve(weburl,dname)
 
     return flist
 

@@ -17,7 +17,7 @@ from ecmwf import ECMWFDataServer
 ####    )
 
 
-def getfiles(bdate,hr,filedir,humidity='Q')
+def getfiles(bdate,hr,filedir,humidity='Q'):
 
         server = ECMWFDataServer('https://api.ecmwf.int/v1',
         'yourkey',

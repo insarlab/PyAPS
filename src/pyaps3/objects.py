@@ -11,9 +11,7 @@
 import os.path
 import sys
 import numpy as np
-import scipy.integrate as intg
 import scipy.interpolate as si
-import matplotlib.pyplot as plt
 from pyaps3 import utils, processor
 
 
@@ -77,22 +75,19 @@ class PyAPS:
         self.lon = lon
         self.lat = lat
         self.inc = inc
-        if mask is None:
-            self.mask = np.ones(self.dem.shape)
-        else:
-            self.mask = mask
+        self.mask = np.ones(self.dem.shape) if mask is None else mask
 
         # Get size
         self.ny, self.nx = self.dem.shape
-        assert self.lon.shape == (self.ny, self.nx), 'PyAPS: Longitude array size mismatch'
-        assert self.lat.shape == (self.ny, self.nx), 'PyAPS: Latitude array size mismatch'
+        assert self.lon.shape  == (self.ny, self.nx), 'PyAPS: Longitude array size mismatch'
+        assert self.lat.shape  == (self.ny, self.nx), 'PyAPS: Latitude array size mismatch'
         assert self.mask.shape == (self.ny, self.nx), 'PyAPS: Mask array size mismatch'
 
         # check incidence angle size and type
         if isinstance(self.inc, np.ndarray):
+            assert self.inc.shape == (self.ny, self.nx), 'PyAPS: Incidence array size mismatch'
             if verb:
                 print('INFO: INCIDENCE ANGLE AS AN ARRAY')
-            assert self.inc.shape == (self.ny, self.nx), 'PyAPS: Incidence array size mismatch'
         elif isinstance(self.inc, (int, float, np.float32, np.float64)):
             if verb:
                 print('INFO: INCIDENCE ANGLE AS A NUMBER: {} DEG'.format(self.inc))
@@ -104,13 +99,13 @@ class PyAPS:
 
         # Get some scales
         if self.grib in ('ERA5','ERAINT','HRES'):
-            self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.703
+            self.hgtscale = ((self.dict['maxAlt'] - self.dict['minAlt']) / self.dict['nhgt']) / 0.703
             self.bufspc = 1.2
         elif self.grib in ('NARR'):
-            self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.3
+            self.hgtscale = ((self.dict['maxAlt'] - self.dict['minAlt']) / self.dict['nhgt']) / 0.3
             self.bufspc = 1.2
         elif self.grib in ('MERRA'):
-            self.hgtscale = ((self.dict['maxAlt']-self.dict['minAlt'])/self.dict['nhgt'])/0.5
+            self.hgtscale = ((self.dict['maxAlt'] - self.dict['minAlt']) / self.dict['nhgt']) / 0.5
             self.bufspc = 1.0 
 
         # Problems in isce when lon and lat arrays have weird numbers
@@ -204,21 +199,16 @@ class PyAPS:
         return
 
 
-    def getdelay(self, dataobj, wvl=np.pi*4., writeStations=True):
-        '''Write delay to a matrix / HDF5 object or a file directly. 
-           Bilinear Interpolation is used.
-                
-                Args:   
-                        * dataobj  : Final output. (str or HDF5 or np.array)
-                                     If str, output is written to file.
-                Kwargs:         
-                        * wvl      : Wavelength in meters.
-                                     4*pi (by default) --> output results in delay in meters.
-                                     0.056 --> output results in delay in radians for C-band SAR.
-                
-                .. note::
-                        If dataobj is string, output is written to the file.
-                        If np.array or HDF5 object, it should be of size (ny,nx).
+    def getdelay(self, dout=None, outFile=None, wvl=np.pi*4., writeStations=True):
+        '''Get the 2D matrix of tropospheric delay with bilinear interpolation.
+        Kwargs:
+            * dout    : 2D np.ndarray, output delay matrix
+            * outFile : str, file path of output delay matrix
+            * wvl     : Wavelength in meters.
+                        4*pi (by default) --> output results in delay in meters.
+                        0.056 --> output results in delay in radians for C-band SAR.
+        Returns:
+            * dout    : 2D np.ndarray in size of (ny, nx) in float32.
         '''
 
         # To know the type of incidence (float, array)
@@ -231,14 +221,9 @@ class PyAPS:
         # Get some info from the dictionary
         minAltp = self.dict['minAltP']
 
-        # Check output and open file if necessary
-        outFile = isinstance(dataobj, str)
-        if outFile:
-            fout = open(dataobj,'wb')
-            dout = np.zeros((self.ny, self.nx))
-        else:
-            assert dataobj.shape == (self.ny, self.nx), 'PyAPS: Not a valid data object.'
-            dout = dataobj
+        # initiate output
+        dout = np.zeros((self.ny, self.nx), dtype=np.float32) if dout is None else dout
+        fout = open(outFile, 'wb') if outFile else None
 
         #######################################################################################
         # BILINEAR INTERPOLATION
@@ -260,7 +245,7 @@ class PyAPS:
         # no reshape
         Lonu = self.lonlist[0,:]
         Latu = self.latlist[:,0]
-        
+
         # Create the cube interpolator for the bilinear method, to interpolate delays into a grid (x,y,z)
         if self.verb:
             print('PROGRESS: CREATE THE BILINEAR INTERPOLATION FUNCTION')
@@ -269,7 +254,7 @@ class PyAPS:
         # We do the weird trick of [::-1,:,:] because Latu has to be in increasing order 
         # for the RegularGridInterpolator method of scipy.interpolate
         linearint = si.RegularGridInterpolator((Latu[::-1], Lonu,kh), 
-                                               self.Delfn_1m[::-1,:,:], 
+                                               self.Delfn_1m[::-1,:,:],
                                                method='linear', 
                                                bounds_error=False, 
                                                fill_value = 0.0)
@@ -285,7 +270,7 @@ class PyAPS:
             # Update progress bar
             if self.verb:
                 toto.update(m+1, every=5)
-            
+
             # Get latitude and longitude arrays
             lati = self.lat[m,:]*self.mask[m,:]
             loni = self.lon[m,:]*self.mask[m,:]
@@ -312,12 +297,10 @@ class PyAPS:
             val = linearint(np.vstack((lati, loni, D)).T)*np.pi*4.0/(cinc*wvl)
             val[xx] = np.nan
 
-            # Write outfile
+            # save output
+            dout[m,:] = val
             if outFile:
-                resy = val.astype(np.float32)
-                resy.tofile(fout)
-            else:
-                dataobj[m,:] = val
+                val.astype(np.float32).tofile(fout)
 
         if self.verb:
             toto.close()
@@ -325,6 +308,4 @@ class PyAPS:
         if outFile:
             fout.close()
 
-        # All done
-        return
-
+        return dout

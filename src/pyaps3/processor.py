@@ -6,10 +6,12 @@
 # Ecole Normale Superieure, Paris                          #
 # Contact: insar@geologie.ens.fr                           #
 ############################################################
+
+
 import numpy as np
 import scipy.interpolate as intp
 import scipy.integrate as intg
-import scipy.spatial as ss
+
 
 def initconst():
     '''Initialization of various constants needed for computing delay.
