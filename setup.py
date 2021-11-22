@@ -19,6 +19,9 @@ setup(
     author="Romain Jolivet, Angelique Benoit",
     author_email="insar@geologie.ens.fr",
 
+    license='GPL-3.0-or-later',
+    llicense_files=('LICENSE',),
+
     url="https://github.com/insarlab/PyAPS",
     project_urls={
         "Bug Reports": "https://github.com/insarlab/PyAPS/issues",
@@ -44,4 +47,4 @@ setup(
     # data files
     include_package_data=True,
     package_data={"pyaps3": ["*.cfg"]},
-) 
+)
