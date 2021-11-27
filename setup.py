@@ -4,6 +4,13 @@
 from setuptools import setup, find_packages
 
 
+# Grab from version.py file: version
+with open("src/pyaps3/version.py", "r") as f:
+    lines = f.readlines()
+    line = [line for line in lines if line.strip().startswith("Tag(")][0].strip()
+    version = line.replace("'",'"').split('"')[1]
+
+
 # Grab from README file: long_description
 with open("README.md", "r") as f:
     long_description = f.read()
@@ -11,7 +18,7 @@ with open("README.md", "r") as f:
 
 setup(
     name='pyaps3',
-    version='0.3.0',
+    version=version,
     description="Python based Atmospheric Phase Screen Estimation",
     long_description=long_description,
     long_description_content_type="text/markdown",
