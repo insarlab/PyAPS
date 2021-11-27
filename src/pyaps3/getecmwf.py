@@ -11,9 +11,9 @@ from ecmwf import ECMWFDataServer
 
 def getfiles(bdate,hr,filedir,model,humidity='Q'):
 
-        server = ECMWFDataServer('https://api.ecmwf.int/v1',
-                'yourkey',
-                'youremailadress')
+    server = ECMWFDataServer('https://api.ecmwf.int/v1',
+                             'yourkey',
+                             'youremailadress')
 
     # Define dataset type
     assert datatype in ('fc','an'), 'Unknown dataset type field for ECMWF'
@@ -40,14 +40,14 @@ def getfiles(bdate,hr,filedir,model,humidity='Q'):
 
     for day in bdate:
         server.retrieve({
-          'dataset'  : "%s"%(model),
-          'type'     : "%s"%(datatype),
-          'date'     : "%s"%(bdate),
-          'time'     : "%s"%(hr),
-          'step'     : "%s"%(dstep),
-          'levtype'  : "pl",
-          'levelist' : "all",
-          'grid'     : "%s"%(gridsize),
-          'param'    : "129/130/%d"%(humidparam),
-          'target'   : "%s/%s_%s_%s_%s.grb"%(fileloc,model,bdate,hr,datatype),
+            'dataset'  : "%s"%(model),
+            'type'     : "%s"%(datatype),
+            'date'     : "%s"%(bdate),
+            'time'     : "%s"%(hr),
+            'step'     : "%s"%(dstep),
+            'levtype'  : "pl",
+            'levelist' : "all",
+            'grid'     : "%s"%(gridsize),
+            'param'    : "129/130/%d"%(humidparam),
+            'target'   : "%s/%s_%s_%s_%s.grb"%(fileloc,model,bdate,hr,datatype),
         })

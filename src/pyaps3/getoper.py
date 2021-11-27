@@ -19,9 +19,9 @@ from ecmwf import ECMWFDataServer
 
 def getfiles(bdate,hr,filedir,humidity='Q'):
 
-        server = ECMWFDataServer('https://api.ecmwf.int/v1',
-        'yourkey',
-        'youremailadress')
+    server = ECMWFDataServer('https://api.ecmwf.int/v1',
+                             'yourkey',
+                             'youremailadress')
 
     # Define humidity param
     assert humidity in ('Q','R'), 'Unknown humidity field for ECMWF'
@@ -32,15 +32,15 @@ def getfiles(bdate,hr,filedir,humidity='Q'):
 
     for day in bdate:
         server.retrieve({
-          'class'    : 'od',
-          'stream'   : 'oper',
-          'expver'   : '1',
-          'date'     : "%s"%(bdate),
-          'time'     : "%s"%(hr),
-          'step'     : "0",
-          'type'     : "an",
-          'levtype'  : "pl",
-          'levelist' : "all",
-          'param'    : "129/130/%d"%(humidparam),
-          'target'   : "%s/%s_%s_%s.grb"%(fileloc,bdate,hr),
+            'class'    : 'od',
+            'stream'   : 'oper',
+            'expver'   : '1',
+            'date'     : "%s"%(bdate),
+            'time'     : "%s"%(hr),
+            'step'     : "0",
+            'type'     : "an",
+            'levtype'  : "pl",
+            'levelist' : "all",
+            'param'    : "129/130/%d"%(humidparam),
+            'target'   : "%s/%s_%s_%s.grb"%(fileloc,bdate,hr),
         })

@@ -12,6 +12,9 @@ __all__ = ['autoget','objects']
 from .objects import PyAPS
 from .autoget import *
 
+# get version info
+from .version import *
+__version__ = release_version
 
 ############################################################
 # Program is part of PyAPS                                 #

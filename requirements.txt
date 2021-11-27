@@ -3,6 +3,7 @@ matplotlib
 numpy
 pygrib
 scipy
+urllib3
 #netcdf4  #for MERRA, which is currently not supported
 #pyhdf    #for MERRA, which is currently not supported
 
