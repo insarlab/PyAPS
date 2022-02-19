@@ -13,11 +13,11 @@ def cc_eraorig(tmp,cdic):
     '''This routine takes temperature profiles and returns Saturation water vapor partial pressure using the Clausius-Clapeyron law applied in Jolivet et al. 2011,GRL, doi:10.1029/2011GL048757. It can be used in case you are using Relative Humidity from ECMWF models
 
     Args:
-    	* tmp  (np.array) : Temperature
-    	* cdic (dict)     : Dictionnary of constants
+        * tmp  (np.array) : Temperature
+        * cdic (dict)     : Dictionnary of constants
 
     Returns:
-    	* esat (np.array) : Saturation water vapor partial pressure.'''
+        * esat (np.array) : Saturation water vapor partial pressure.'''
 
     a1w=cdic['a1w']
     T3=cdic['T3']

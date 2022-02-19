@@ -10,10 +10,8 @@
 
 import os.path
 import configparser
-import cdsapi
 import urllib3
-# disable InsecureRequestWarning message from cdsapi
-urllib3.disable_warnings()
+import cdsapi
 import pyaps3 as pa
 
 

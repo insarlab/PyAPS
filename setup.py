@@ -27,7 +27,7 @@ setup(
     author_email="insar@geologie.ens.fr",
 
     license='GPL-3.0-or-later',
-    llicense_files=('LICENSE',),
+    license_files=('LICENSE',),
 
     url="https://github.com/insarlab/PyAPS",
     project_urls={
@@ -47,6 +47,7 @@ setup(
         'numpy',
         'pygrib',
         'scipy',
+        'urllib3',
         # 'netcdf4', #for MERRA, which is currently not supported
         # 'pyhdf',   #for MERRA, which is currently not supported
     ],

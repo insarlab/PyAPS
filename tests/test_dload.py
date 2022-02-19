@@ -12,7 +12,7 @@ print('NOTE: Account setup is required on the Copernicus Climate Data Store (CDS
 print('      More detailed info can be found on: https://retostauffer.org/code/Download-ERA5/')
 print('      Add your account info to ~/.cdsapirc file.')
 filedir = os.path.join(os.path.dirname(__file__), 'data', 'ERA5')
-pa.ECMWFdload(['20100601','20100901'], hr='14', filedir=filedir, model='ERA5', snwe=(30,40,120,140))
+pa.ECMWFdload(['20200601','20200901'], hr='14', filedir=filedir, model='ERA5', snwe=(30,40,120,140))
 
 print('------------------------------------------------')
 print('Downloads OK')
