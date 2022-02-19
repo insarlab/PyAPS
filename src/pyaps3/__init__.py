@@ -10,10 +10,10 @@ Written by Romain Jolivet <rjolivet@gps.caltech.edu> and Piyush Agram <piyush@gp
 __all__ = ['autoget','objects']
 
 from .objects import PyAPS
-from .autoget import *
+from .autoget import ECMWFdload, MERRAdload, NARRdload
 
 # get version info
-from .version import *
+from .version import release_version, release_date
 __version__ = release_version
 
 ############################################################

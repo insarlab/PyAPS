@@ -24,9 +24,11 @@ def cc_narr(tmp,cdic):
     return esat
 ###############Completed CC_NARR#####################################
 
+
 ########Read in ERA data from a given ERA Interim file##################
 def get_narr(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
-    '''Read data from NARR grib file. Note that the Lon values should be between [0-360]. GRB file with weather model data can be downloaded from http://nomads.ncdc.noaa.gov/data/narr .
+    '''Read data from NARR grib file. Note that the Lon values should be between [0-360].
+    GRB file with weather model data can be downloaded from http://nomads.ncdc.noaa.gov/data/narr .
 
     Args:
         * fname       (str):  Path to the grib file
@@ -53,11 +55,13 @@ def get_narr(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
 
     if verbose:
         print('PROGRESS: READING GRIB FILE')
-    lvls = np.array([100, 125, 150, 175, 200, 225, 250, 275, 300, 350, 400, 450, 500, 550, 600, 650, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000])
+    lvls = np.array([100, 125, 150, 175, 200, 225, 250, 275, 300, 350, 400, 450, 500, 550,
+                     600, 650, 700, 725, 750, 775, 800, 825, 850, 875, 900, 925, 950, 975, 1000])
     nlvls = len(lvls)
 
     alpha = cdic['Rv']/cdic['Rd']
-    gphind = np.array([16,24,32,40,48,56,64,72,80,88,96,104,112,120,128,137,146,155,164,173,182,191,200,210,219,228,237,246,255])
+    gphind = np.array([16,24,32,40,48,56,64,72,80,88,96,104,112,120,128,137,
+                       146,155,164,173,182,191,200,210,219,228,237,246,255])
     
     grbs = pygrib.open(fname)
     grbs.seek(gphind[0])
@@ -65,8 +69,7 @@ def get_narr(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
     lats,lons = grb.latlons()
     lons[lons<0] += 360.
     g = cdic['g']    
-    mask = (lats > minlat) & (lats < maxlat) \
-    & (lons > minlon) & (lons < maxlon)
+    mask = (lats > minlat) & (lats < maxlat) & (lons > minlon) & (lons < maxlon)
     [ii,jj] = np.where(mask == True)
     del mask
     latlist = lats[ii,jj]
@@ -74,20 +77,20 @@ def get_narr(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
     nstn = len(ii)
     
     ####Create arrays for 3D storage
-    gph = np.zeros((nlvls, nstn))   #Potential height
+    gph = np.zeros((nlvls, nstn))     #Potential height
     tmp = gph.copy()                  #Temperature
     vpr = gph.copy()                  #Vapor pressure
     if verbose:
         print('Number of stations:', nstn)
 
-    lvls = 100.0*lvls              #Conversion to absolute pressure
+    lvls = 100.0*lvls                 #Conversion to absolute pressure
     for i in range(nlvls):
-        grbs.seek(gphind[i])   #Reading potential height.
+        grbs.seek(gphind[i])          #Reading potential height.
         grb = grbs.read(3)
         val = grb[0].values
         gph[i,:] = val[ii,jj]
 
-        val = grb[1].values   #Reading temperature
+        val = grb[1].values           #Reading temperature
         temp = val[ii,jj]
         tmp[i,:] = temp
 
@@ -98,6 +101,8 @@ def get_narr(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
         
     return lvls,latlist,lonlist,gph,tmp,vpr
 ###############Completed GET_ERA########################################
+
+
 ########Interpolates the NARR delay to a regular grid####################
 def intdel(hgt,latlin,lonlin,delcin,spacing=0.3):
     '''Interpolates the NARR data to a regular grid with a grid spacing being the average of previous grid spaces
@@ -143,7 +148,7 @@ def intdel(hgt,latlin,lonlin,delcin,spacing=0.3):
     nlvls = len(hgt)
     delc = np.zeros((nstno,nlvls))
 
-# Loop on the pressure levels
+    # Loop on the pressure levels
     for n in range(nlvls):
         delc[:,n] = si.griddata(Points,delcin[:,n],Xi,method='cubic')#,fill_value=10*np.float(n))
 

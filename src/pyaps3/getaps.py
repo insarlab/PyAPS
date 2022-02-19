@@ -18,9 +18,9 @@ days,usat,Jmat = ts.ConnectMatrix(dates,sat)
 
 daylist = []
 for k in days:
-	dobj = dt.date.fromordinal(int(k))
-	strobj = '%4d%02d%02d'%(dobj.year,dobj.month,dobj.day)
-	daylist.append(strobj)
+    dobj = dt.date.fromordinal(int(k))
+    strobj = '%4d%02d%02d'%(dobj.year,dobj.month,dobj.day)
+    daylist.append(strobj)
 
 PyAPS.ECMWFdload(daylist,'18','./Atmos/ECMWF/')
 

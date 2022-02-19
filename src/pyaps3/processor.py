@@ -49,6 +49,7 @@ def initconst():
 
 ###############Completed the list of constants################
 
+
 ##########Interpolating to heights from Pressure levels###########
 def intP2H(lvls,hgt,gph,tmp,vpr,cdic,verbose=False):
     '''Interpolates the pressure level data to altitude.
@@ -174,7 +175,7 @@ def PTV2del(Presi,Tempi,Vpri,hgt,cdict,verbose=False):
 
     if verbose:
         print('PROGRESS: COMPUTING DELAY FUNCTIONS')
-    nhgt = len(hgt)            #Number of height points
+    nhgt = len(hgt)              #Number of height points
     nlat = Presi.shape[0]        #Number of stations
     nlon = Presi.shape[1]
     WonT = Vpri/Tempi
@@ -210,6 +211,7 @@ def PTV2del(Presi,Tempi,Vpri,hgt,cdict,verbose=False):
 
     return DDry2,DWet2
 ####################Completed delay function#################
+
 
 ####Setting up 3D interpolation function in geo/xy coordinates#######
 def make3dintp(Delfn,lonlist,latlist,hgt,hgtscale):
@@ -255,8 +257,8 @@ def make3dintp(Delfn,lonlist,latlist,hgt,hgtscale):
     return fnc
 ###########Completed 3D interpolation in geo coordinates############
 
-# Class for bilinear interpolation at a certain level in a 3d cube
 
+########### Class for bilinear interpolation at a certain level in a 3d cube
 class Bilinear2DInterpolator:
     '''Bilinear interpolation in 2D. The code is modified from mpl_toolkits.basemap.interp and scipy.interpolate'''
     def __init__(self, xin, yin, datain,cube=False):
