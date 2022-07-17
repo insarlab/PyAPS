@@ -26,6 +26,14 @@ or via `pip` as:
 pip install pyaps3
 ```
 
+PyAps is also available in the main archive of the [Debian](https://tracker.debian.org/pkg/pyaps3) GNU/Linux OS. It can be installed by using your favourite package manager or running the following command:
+
+```bash
+apt install python3-pyaps3
+```
+
+The same procedure, in priciple, can be used in [Ubuntu](https://ubuntu.com) and all the other [Debian derivatives](https://wiki.debian.org/Derivatives/Census).
+
 #### Build from source
 
 The development version can be installed via `pip` as:
