@@ -14,7 +14,7 @@ This is research code provided to you "as is" with NO WARRANTIES OF CORRECTNESS.
 
 ### 1. Installation
 
-`pyaps3` is available on the `conda-forge` channel and PyPI. The released version can be installed via `conda` as:
+`pyaps3` is available on the [conda-forge](https://anaconda.org/conda-forge/pyaps3) channel, [PyPI](https://pypi.org/project/pyaps3/) and the main archive of the [Debian](https://tracker.debian.org/pkg/pyaps3) GNU/Linux OS. The released version can be installed via `conda` as:
 
 ```bash
 conda install -c conda-forge pyaps3
@@ -26,13 +26,11 @@ or via `pip` as:
 pip install pyaps3
 ```
 
-PyAps is also available in the main archive of the [Debian](https://tracker.debian.org/pkg/pyaps3) GNU/Linux OS. It can be installed by using your favourite package manager or running the following command:
+or via `apt` (or other package managers) for [Debian-derivative OS](https://wiki.debian.org/Derivatives/Census) users, including [Ubuntu](https://ubuntu.com), as:
 
 ```bash
 apt install python3-pyaps3
 ```
-
-The same procedure, in priciple, can be used in [Ubuntu](https://ubuntu.com) and all the other [Debian derivatives](https://wiki.debian.org/Derivatives/Census).
 
 #### Build from source
 
