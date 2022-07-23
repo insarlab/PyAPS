@@ -1,7 +1,7 @@
 [![Language](https://img.shields.io/badge/python-3.6%2B-blue.svg)](https://www.python.org/)
 [![CircleCI](https://img.shields.io/circleci/build/github/insarlab/PyAPS.svg?logo=circleci&label=test)](https://circleci.com/gh/insarlab/PyAPS)
 [![Version](https://img.shields.io/github/v/release/insarlab/PyAPS?color=green)](https://github.com/insarlab/PyAPS/releases)
-[![License](https://img.shields.io/badge/license-GPLv3-yellow.svg)](https://github.com/insarlab/PyAPS/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-GPLv3+-yellow.svg)](https://github.com/insarlab/PyAPS/blob/main/LICENSE)
 [![Citation](https://img.shields.io/badge/doi-10.1029%2F2011GL048757-blue)](https://doi.org/10.1029/2011GL048757)
 
 ## PyAPS - Python based Atmospheric Phase Screen estimation

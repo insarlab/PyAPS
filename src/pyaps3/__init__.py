@@ -9,12 +9,11 @@ Written by Romain Jolivet <rjolivet@gps.caltech.edu> and Piyush Agram <piyush@gp
 
 __all__ = ['autoget','objects']
 
-from .objects import PyAPS
-from .autoget import ECMWFdload, MERRAdload, NARRdload
+from pyaps3.objects import PyAPS
+from pyaps3.autoget import ECMWFdload, MERRAdload, NARRdload
 
 # get version info
-from .version import release_version, release_date
-__version__ = release_version
+from pyaps3.version import release_version as __version__
 
 ############################################################
 # Program is part of PyAPS                                 #

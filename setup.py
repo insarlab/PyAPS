@@ -20,16 +20,25 @@ setup(
     name='pyaps3',
     version=version,
     description="Python based Atmospheric Phase Screen Estimation",
+    url="https://github.com/insarlab/PyAPS",
+    download_url=("https://github.com/insarlab/PyAPS/archive/v{}.tar.gz".format(version)),
     long_description=long_description,
     long_description_content_type="text/markdown",
-
     author="Romain Jolivet, Angelique Benoit",
     author_email="insar@geologie.ens.fr",
+    license="GPL-3.0-or-later",
+    license_files=("LICENSE",),
 
-    license='GPL-3.0-or-later',
-    license_files=('LICENSE',),
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+    ],
+    keywords="InSAR, troposphere, geodesy, geophysics, ERA5",
 
-    url="https://github.com/insarlab/PyAPS",
     project_urls={
         "Bug Reports": "https://github.com/insarlab/PyAPS/issues",
         "Documentation": "https://github.com/insarlab/PyAPS/tree/main/docs",
@@ -41,6 +50,7 @@ setup(
     package_dir={"": "src"},        # tell distutils packages are under src
 
     # dependencies
+    python_requires=">=3.6",
     install_requires=[
         'cdsapi',
         'matplotlib',
@@ -54,5 +64,7 @@ setup(
 
     # data files
     include_package_data=True,
-    package_data={"pyaps3": ["*.cfg"]},
+    package_data={
+        "pyaps3": ["*.cfg"],
+    },
 )
