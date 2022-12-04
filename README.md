@@ -14,6 +14,8 @@ This is research code provided to you "as is" with NO WARRANTIES OF CORRECTNESS.
 
 ### 1. Installation
 
+#### a. Install the released version [recommended]
+
 `pyaps3` is available on the [conda-forge](https://anaconda.org/conda-forge/pyaps3) channel, [PyPI](https://pypi.org/project/pyaps3/) and the main archive of the [Debian](https://tracker.debian.org/pkg/pyaps3) GNU/Linux OS. The released version can be installed via `conda` as:
 
 ```bash
@@ -32,7 +34,7 @@ or via `apt` (or other package managers) for [Debian-derivative OS](https://wiki
 apt install python3-pyaps3
 ```
 
-#### Build from source
+#### b. Install the development version
 
 The development version can be installed via `pip` as:
 
@@ -40,7 +42,7 @@ The development version can be installed via `pip` as:
 pip install git+https://github.com/insarlab/PyAPS.git
 ```
 
-Or build from source manually as:
+or build from source manually as:
 
 ```bash
 git clone https://github.com/insarlab/PyAPS.git
