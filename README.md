@@ -83,4 +83,4 @@ python PyAPS/tests/test_dload.py
 
 The methodology and validation can be found in:
 
-+ Jolivet, R., R. Grandin, C. Lasserre, M.-P. Doin and G. Peltzer (2011), Systematic InSAR tropospheric phase delay corrections from global meteorological reanalysis data, Geophys. Res. Lett., 38, L17311, doi:10.1029/2011GL048757.
++ Jolivet, R., R. Grandin, C. Lasserre, M.-P. Doin and G. Peltzer (2011), Systematic InSAR tropospheric phase delay corrections from global meteorological reanalysis data, _Geophys. Res. Lett., 38,_ L17311, doi:10.1029/2011GL048757.
