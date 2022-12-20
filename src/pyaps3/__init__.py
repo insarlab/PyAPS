@@ -7,13 +7,21 @@ Written by Romain Jolivet <rjolivet@gps.caltech.edu> and Piyush Agram <piyush@gp
     Details of the python module can be obtained `here. <http://code.google.com/p/pyaps>`_
 '''
 
-__all__ = ['autoget','objects']
+# get version info
+from importlib.metadata import PackageNotFoundError, version
+try:
+    __version__ = version(__name__)
+except PackageNotFoundError:
+    print('package is not installed!\n'
+          'Please follow the installation instructions in the README.md.\n'
+          'Or, to just get the version number, use:\n'
+          '   python -m setuptools_scm')
 
+# top-level functions
 from pyaps3.objects import PyAPS
 from pyaps3.autoget import ECMWFdload, MERRAdload, NARRdload
 
-# get version info
-from pyaps3.version import release_version as __version__
+__all__ = ['autoget', 'objects']
 
 ############################################################
 # Program is part of PyAPS                                 #
