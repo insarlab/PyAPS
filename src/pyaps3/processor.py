@@ -20,7 +20,9 @@ def initconst():
         * None
 
     Returns:
-        * constdict (dict): Dictionary of constants'''
+        * constdict (dict): Dictionary of constants
+    '''
+
     constdict = {}
     constdict['k1'] = 0.776   #(K/Pa)
     constdict['k2'] = 0.716   #(K/Pa)
@@ -55,20 +57,20 @@ def intP2H(lvls,hgt,gph,tmp,vpr,cdic,verbose=False):
     '''Interpolates the pressure level data to altitude.
 
     Args:
-        * lvls (np.array) : Pressure levels.
-        * hgt  (np.array) : Height values for interpolation.
-        * gph  (np.array) : Geopotential height.
-        * tmp  (np.array) : Temperature.
-        * vpr  (np.array) : Vapor pressure.
-        * cdic (dict)     : Dictionary of constants.
+        * lvls (np.ndarray) : Pressure levels.
+        * hgt  (np.ndarray) : Height values for interpolation.
+        * gph  (np.ndarray) : Geopotential height.
+        * tmp  (np.ndarray) : Temperature.
+        * vpr  (np.ndarray) : Vapor pressure.
+        * cdic (dict)       : Dictionary of constants.
 
     .. note::
         gph,tmp,vpr are of size (nstn,nlvls).
 
     Returns:
-        * Presi (np.array) : Interpolated pressure.
-        * Tempi (np.array) : Interpolated temperature.
-        * Vpri  (np.array) : Interpolated vapor pressure.
+        * Presi (np.ndarray): Interpolated pressure.
+        * Tempi (np.ndarray): Interpolated temperature.
+        * Vpri  (np.ndarray): Interpolated vapor pressure.
 
     .. note::
         Cubic splines are used to convert pressure level data to height level data.'''
@@ -91,65 +93,86 @@ def intP2H(lvls,hgt,gph,tmp,vpr,cdic,verbose=False):
             hx = temp.copy()
             sFlag = False
             eFlag = False
-            if (hx.min() > minAlt):          #Add point at start
+            #Add point at start
+            if (hx.min() > minAlt):
                 sFlag = True
-                hx = np.concatenate((hx,[minAlt-1]),axis = 0) #changed from 1 to 0 (-1 should also work), CL
+                #changed from 1 to 0 (-1 should also work), CL
+                hx = np.concatenate((hx,[minAlt-1]),axis = 0)
 
-            if (hx.max() < maxAlt):        #Add point at end
+            #Add point at end
+            if (hx.max() < maxAlt):
                 eFlag = True
-                hx = np.concatenate(([maxAlt+1],hx),axis=0) #changed from 1 to 0 (-1 should also work), CL
+                #changed from 1 to 0 (-1 should also work), CL
+                hx = np.concatenate(([maxAlt+1],hx),axis=0)
 
-            hx = -hx             #Splines needs monotonically increasing.    
-    
-            hy = lvls.copy()     #Interpolating pressure values
+            #Splines needs monotonically increasing.
+            hx = -hx
+
+            #Interpolating pressure values
+            hy = lvls.copy()
             if (sFlag == True):
                 val = hy[-1] +(hx[-1] - hx[-2])* (hy[-1] - hy[-2])/(hx[-2]-hx[-3])
-                hy = np.concatenate((hy,[val]),axis=0) #changed from 1 to 0 (-1 should also work), CL
+                #changed from 1 to 0 (-1 should also work), CL
+                hy = np.concatenate((hy,[val]),axis=0)
+
             if (eFlag == True):
-                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2]) 
-                hy = np.concatenate(([val],hy),axis=0) #changed from 1 to 0 (-1 should also work), CL
+                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
+                #changed from 1 to 0 (-1 should also work), CL
+                hy = np.concatenate(([val],hy),axis=0)
 
             tck = intp.interp1d(hx,hy,kind='cubic')
-            temp = tck(-hgt)      #Again negative for consistency with hx
+            #Again negative for consistency with hx
+            temp = tck(-hgt)
             Presi[i,j,:] = temp.copy()
             del temp
 
-            temp = tmp[:,i,j]        #Interpolating temperature
+            #Interpolating temperature
+            temp = tmp[:,i,j]
             hy = temp.copy()
             if (sFlag == True):
                 val = hy[-1] +(hx[-1] - hx[-2])* (hy[-1] - hy[-2])/(hx[-2]-hx[-3])
-                hy = np.concatenate((hy,[val]),axis=0) #changed from 1 to 0 (-1 should also work), CL
+                #changed from 1 to 0 (-1 should also work), CL
+                hy = np.concatenate((hy,[val]),axis=0)
+
             if (eFlag == True):
                 val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
-                hy = np.concatenate(([val],hy),axis=0) #changed from 1 to 0 (-1 should also work), CL
+                #changed from 1 to 0 (-1 should also work), CL
+                hy = np.concatenate(([val],hy),axis=0)
 
             tck = intp.interp1d(hx,hy,kind='cubic')
             temp = tck(-hgt)
             Tempi[i,j,:] = temp.copy()
             del temp
-    
-            temp = vpr[:,i,j]          #Interpolating vapor pressure
+
+            #Interpolating vapor pressure
+            temp = vpr[:,i,j]
             hy = temp.copy()
             if (sFlag == True):
                 val = hy[-1] +(hx[-1] - hx[-2])* (hy[-1] - hy[-2])/(hx[-2]-hx[-3])
-                hy = np.concatenate((hy,[val]),axis=0) #changed from 1 to 0 (-1 should also work), CL
+                #changed from 1 to 0 (-1 should also work), CL
+                hy = np.concatenate((hy,[val]),axis=0)
+
             if (eFlag == True):
                 val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
-                hy = np.concatenate(([val],hy),axis=0) #changed from 1 to 0 (-1 should also work), CL
+                #changed from 1 to 0 (-1 should also work), CL
+                hy = np.concatenate(([val],hy),axis=0)
+
             tck = intp.interp1d(hx,hy,kind='cubic')
             temp = tck(-hgt)
             Vpri[i,j,:] = temp.copy()
             del temp
 
     ## Save into files for plotting (test for era5 interpolation)
-    #np.savetxt('/home/angel/Tests/test_era5interpolation/Outputs/alt_20141023_20141210_era5.txt', gph, fmt=' '.join(['%s']*380))       # Save altitude (of lvls)
-    #np.savetxt('/home/angel/Tests/test_era5interpolation/Outputs/lvls_20141023_20141210_era5.txt', lvls.T, fmt='%s')                   # Save pressure
-    #np.savetxt('/home/angel/Tests/test_era5interpolation/Outputs/tmp_20141023_20141210_era5.txt', tmp, fmt=' '.join(['%s']*380))       # Save temperature
-    #np.savetxt('/home/angel/Tests/test_era5interpolation/Outputs/vpr_20141023_20141210_era5.txt', vpr, fmt=' '.join(['%s']*380))       # Save vapor
-    #np.savetxt('/home/angel/Tests/test_era5interpolation/Outputs/Alti_20141023_20141210_era5.txt', hgt.T, fmt='%s')                    # Save interpo altitude
-    #np.savetxt('/home/angel/Tests/test_era5interpolation/Outputs/Presi_20141023_20141210_era5.txt', Presi.T, fmt=' '.join(['%s']*380)) # Save interpo pressure
-    #np.savetxt('/home/angel/Tests/test_era5interpolation/Outputs/Tempi_20141023_20141210_era5.txt', Tempi.T, fmt=' '.join(['%s']*380)) # Save interpo temperature
-    #np.savetxt('/home/angel/Tests/test_era5interpolation/Outputs/Vpri_20141023_20141210_era5.txt', Vpri.T, fmt=' '.join(['%s']*380))   # Save interpo vapor
+    #out_dir = '/home/angel/Tests/test_era5interpolation/Outputs'
+    #suffix = '20141023_20141210_era5'
+    #np.savetxt(f'{out_dir}/alt_{suffix}.txt',   gph,     fmt=' '.join(['%s']*380)) # altitude (of lvls)
+    #np.savetxt(f'{out_dir}/lvls_{suffix}.txt',  lvls.T,  fmt='%s')                 # pressure
+    #np.savetxt(f'{out_dir}/tmp_{suffix}.txt',   tmp,     fmt=' '.join(['%s']*380)) # temperature
+    #np.savetxt(f'{out_dir}/vpr_{suffix}.txt',   vpr,     fmt=' '.join(['%s']*380)) # vapor
+    #np.savetxt(f'{out_dir}/Alti_{suffix}.txt',  hgt.T,   fmt='%s')                 # interpo altitude
+    #np.savetxt(f'{out_dir}/Presi_{suffix}.txt', Presi.T, fmt=' '.join(['%s']*380)) # interpo pressure
+    #np.savetxt(f'{out_dir}/Tempi_{suffix}.txt', Tempi.T, fmt=' '.join(['%s']*380)) # interpo temperature
+    #np.savetxt(f'{out_dir}/Vpri_{suffix}.txt',  Vpri.T,  fmt=' '.join(['%s']*380)) # interpo vapor
 
     return Presi,Tempi,Vpri
 ###########Completed interpolation to height levels #####################
@@ -160,15 +183,15 @@ def PTV2del(Presi,Tempi,Vpri,hgt,cdict,verbose=False):
     '''Computes the delay function given Pressure, Temperature and Vapor pressure.
 
     Args:
-        * Presi (np.array) : Pressure at height levels.
-        * Tempi (np.array) : Temperature at height levels.
-        * Vpri  (np.array) : Vapor pressure at height levels.
-        * hgt   (np.array) : Height levels.
-        * cdict (np.array) : Dictionary of constants.
+        * Presi (np.ndarray) : Pressure at height levels.
+        * Tempi (np.ndarray) : Temperature at height levels.
+        * Vpri  (np.ndarray) : Vapor pressure at height levels.
+        * hgt   (np.ndarray) : Height levels.
+        * cdict (np.ndarray) : Dictionary of constants.
 
     Returns:
-        * DDry2 (np.array) : Dry component of atmospheric delay.
-        * DWet2 (np.array) : Wet component of atmospheric delay.
+        * DDry2 (np.ndarray) : Dry component of atmospheric delay.
+        * DWet2 (np.ndarray) : Wet component of atmospheric delay.
 
     .. note::
         Computes refractive index at each altitude and integrates the delay using cumtrapz.'''
@@ -218,18 +241,19 @@ def make3dintp(Delfn,lonlist,latlist,hgt,hgtscale):
     '''Returns a 3D interpolation function that can be used to interpolate using llh coordinates.
 
     Args:
-        * Delfn    (np.array) : Array of delay values.
-        * lonlist  (np.array) : Array of station longitudes.
-        * latlist  (np.array) : Array of station latitudes.
-        * hgt      (np.array) : Array of height levels.
-        * hgtscale (np.float) : Height scale factor for interpolator.
+        * Delfn    (np.ndarray) : Array of delay values.
+        * lonlist  (np.ndarray) : Array of station longitudes.
+        * latlist  (np.ndarray) : Array of station latitudes.
+        * hgt      (np.ndarray) : Array of height levels.
+        * hgtscale (float)      : Height scale factor for interpolator.
 
     Returns:
         * fnc  (function) : 3D interpolation function.
 
     .. note::
         We currently use the LinearNDInterpolator from scipy.
-        '''
+    '''
+
     ##Delfn   = Ddry + Dwet. Delay function.
     ##lonlist = list of lons for stations. / x
     ##latlist = list of lats for stations. / y

@@ -68,7 +68,7 @@ def read_eratxt(fname,cdic):
     tmp=f.readlines()
     i=0
     nstn=0
-    maxloop=np.int(len(tmp))
+    maxloop=int(len(tmp))
     while i<maxloop:
         if (tmp[i][0]=='-'):
             nstn=nstn+1

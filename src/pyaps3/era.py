@@ -15,11 +15,11 @@ def cc_era(tmp,cdic):
     '''Clausius Clayperon law used by ERA Interim.
 
     Args:
-        * tmp  (np.array) : Temperature.
-        * cdic (dict)     : Dictionary of constants
+        * tmp  (np.ndarray) : Temperature.
+        * cdic (dict)       : Dictionary of constants
 
     Returns:
-        * esat (np.array) : Water vapor saturation partial pressure.'''
+        * esat (np.ndarray) : Water vapor saturation partial pressure.'''
 
 
     a1w = cdic['a1w']
@@ -53,23 +53,23 @@ def get_era(fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose=False):
     GRB file with weather model data can be downloaded from http://rda.ucar.edu/datasets/ds627.0/
 
     Args:
-        * fname       (str):  Path to the grib file
-        * minlat (np.float):  Minimum latitude
-        * maxlat (np.float):  Maximum latitude
-        * minlon (np.float):  Minimum longitude
-        * maxlon (np.float):  Maximum longitude
-        * cdic   (np.float):  Dictionary of constants
+        * fname   (str)       : Path to the grib file
+        * minlat  (float)     : Minimum latitude
+        * maxlat  (float)     : Maximum latitude
+        * minlon  (float)     : Minimum longitude
+        * maxlon  (float)     : Maximum longitude
+        * cdic    (float)     : Dictionary of constants
     
     Kwargs:
-        * humidity    (str): Specific ('Q') or relative humidity ('R').
+        * humidity(str)       : Specific ('Q') or relative humidity ('R').
 
     Returns:
-        * lvls   (np.array): Pressure levels
-        * latlist(np.array): Latitudes of the stations
-        * lonlist(np.array): Longitudes of the stations
-        * gph    (np.array): Geopotential height
-        * tmp    (np.array): Temperature
-        * vpr    (np.array): Vapor pressure
+        * lvls    (np.ndarray): Pressure levels
+        * latlist (np.ndarray): Latitudes of the stations
+        * lonlist (np.ndarray): Longitudes of the stations
+        * gph     (np.ndarray): Geopotential height
+        * tmp     (np.ndarray): Temperature
+        * vpr     (np.ndarray): Vapor pressure
 
     .. note::
         Uses cc_era by default.
@@ -142,28 +142,28 @@ def get_ecmwf(model,fname,minlat,maxlat,minlon,maxlon,cdic, humidity='Q',verbose
     Modified by A. Benoit, January 2019.
 
     Args:
-        * model       (str):  Model used (ERA5, ERAINT or HRES)
-        * fname       (str):  Path to the grib file
-        * minlat (np.float):  Minimum latitude
-        * maxlat (np.float):  Maximum latitude
-        * minlon (np.float):  Minimum longitude
-        * maxlon (np.float):  Maximum longitude
-        * cdic   (np.float):  Dictionary of constants
+        * model    (str)       : Model used (ERA5, ERAINT or HRES)
+        * fname    (str)       : Path to the grib file
+        * minlat   (float)     : Minimum latitude
+        * maxlat   (float)     : Maximum latitude
+        * minlon   (float)     : Minimum longitude
+        * maxlon   (float)     : Maximum longitude
+        * cdic     (float)     : Dictionary of constants
     
     Kwargs:
-        * humidity    (str): Specific ('Q') or relative humidity ('R').
+        * humidity (str)       : Specific ('Q') or relative humidity ('R').
 
     Returns:
-        * lvls   (np.array): Pressure levels
-        * latlist(np.array): Latitudes of the stations
-        * lonlist(np.array): Longitudes of the stations
-        * gph    (np.array): Geopotential height
-        * tmp    (np.array): Temperature
-        * vpr    (np.array): Vapor pressure
+        * lvls     (np.ndarray): Pressure levels
+        * latlist  (np.ndarray): Latitudes of the stations
+        * lonlist  (np.ndarray): Longitudes of the stations
+        * gph      (np.ndarray): Geopotential height
+        * tmp      (np.ndarray): Temperature
+        * vpr      (np.ndarray): Vapor pressure
 
     .. note::
         Uses cc_era by default.
-        '''
+    '''
 
     assert humidity in ('Q','R'), 'Undefined humidity field in get_era.'
     assert model in ('ERA5', 'ERAINT','HRES'), 'Model not recognized.'
