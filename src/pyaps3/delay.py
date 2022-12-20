@@ -62,7 +62,7 @@ def read_eratxt(fname,cdic):
     gpht=[]
     tmpt=[]
     reht=[]
-    
+
     g=cdic['g']
 
     f=open(fname,'r')
@@ -96,7 +96,7 @@ def read_eratxt(fname,cdic):
                 tmpt.append(float(val[2]))
                 reht.append(float(val[3]))
                 i=i+1
-    
+
     gpht=np.array(gpht)/g
     gph=np.flipud(gpht.reshape((n,nstn),order='F'))
     del gpht
@@ -109,7 +109,7 @@ def read_eratxt(fname,cdic):
     vprt=(np.array(reht)/100.)*esat
     vpr=np.flipud(vprt.reshape((n,nstn),order='F'))
     del vprt
-    del esat    
+    del esat
 
     lvls=np.flipud(np.array(lvls))
     lvls=lvls[0:n]

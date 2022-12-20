@@ -7,9 +7,9 @@ import netCDF4
 
 
 def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
-    '''Read data from MERRA hdf file. Note that the Lon values 
-       should be between [0-360]. Hdf file with weather model 
-       data can be downloaded from 
+    '''Read data from MERRA hdf file. Note that the Lon values
+       should be between [0-360]. Hdf file with weather model
+       data can be downloaded from
        http://disc.sci.gsfc.nasa.gov/daac-bin/FTPSubset.pl
 
     Args:
@@ -105,7 +105,7 @@ def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
             index = nlvls - i - 1
             gph[i,:] = height[index][ii,jj]
 
-        idx = np.zeros(nstn) 
+        idx = np.zeros(nstn)
         for i in range(nstn):
             for m in range(nlvls):
                 if spressure[ii[i]][jj[i]] > lvls[m]:
@@ -174,7 +174,7 @@ def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
         nlvls = len(lvls)
         lvls = np.array(lvls)
 
-        alpha = cdic['Rv']/cdic['Rd']    
+        alpha = cdic['Rv']/cdic['Rd']
 
         # Select latitutde and longitude
         lats = ncv['lat'][:]
@@ -226,7 +226,7 @@ def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
             index = nlvls - i - 1
             gph[i,:] = height[index][ii,jj]
 
-        idx = np.zeros(nstn) 
+        idx = np.zeros(nstn)
         for i in range(nstn):
             for m in range(nlvls):
                 if spressure[ii[i]][jj[i]] > lvls[m]:
