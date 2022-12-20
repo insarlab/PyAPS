@@ -135,20 +135,20 @@ def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
 
         #fill out the tmp and vpr array
         for i in range(nstn):
-            id = int(idx[i]+1)
-            for n in range(id):
+            ind = int(idx[i]+1)
+            for n in range(ind):
                 tmp[n,i] = temp[nlvls - 1 - n,ii[i],jj[i]]
-            exl = nlvls - id
+            exl = nlvls - ind
             for m in range(exl):
-                tmp[id+m,i] =  tk[i]*lvls[id+m] + tb[i]
+                tmp[ind+m,i] =  tk[i]*lvls[ind+m] + tb[i]
 
         for i in range(nstn):
-            id = int(idx[i]+1)
-            for n in range(id):
+            ind = int(idx[i]+1)
+            for n in range(ind):
                 vpr[n,i] = humidity[nlvls - 1- n,ii[i],jj[i]]
-            exl = nlvls - id
+            exl = nlvls - ind
             for m in range(exl):
-                vpr[id+m,i] =  hk[i]*lvls[id+m] + hb[i]
+                vpr[ind+m,i] =  hk[i]*lvls[ind+m] + hb[i]
 
         memo = list(vpr)
         memo = np.array(memo)
@@ -256,20 +256,20 @@ def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
 
         #fill out the tmp and vpr array
         for i in range(nstn):
-            id = int(idx[i]+1)
-            for n in range(id):
+            ind = int(idx[i]+1)
+            for n in range(ind):
                 tmp[n,i] = temp[nlvls - 1 - n,ii[i],jj[i]]
-            exl = nlvls - id
+            exl = nlvls - ind
             for m in range(exl):
-                tmp[id+m,i] =  tk[i]*lvls[id+m] + tb[i]
+                tmp[ind+m,i] =  tk[i]*lvls[ind+m] + tb[i]
 
         for i in range(nstn):
-            id = int(idx[i]+1)
-            for n in range(id):
+            ind = int(idx[i]+1)
+            for n in range(ind):
                 vpr[n,i] = humidity[nlvls - 1- n,ii[i],jj[i]]
-            exl = nlvls - id
+            exl = nlvls - ind
             for m in range(exl):
-                vpr[id+m,i] =  hk[i]*lvls[id+m] + hb[i]
+                vpr[ind+m,i] =  hk[i]*lvls[ind+m] + hb[i]
         memo = list(vpr)
         memo = np.array(memo)
         for i in range(nlvls):
