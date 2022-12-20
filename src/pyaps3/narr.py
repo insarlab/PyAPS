@@ -8,11 +8,11 @@ def cc_narr(tmp,cdic):
     '''Clausius Clayperon law used in the NARR model.
 
     Args:
-        * tmp  (np.array): Temperature.
-        * cdic (dict)    : Dictionnary of constants.
+        * tmp  (np.ndarray): Temperature.
+        * cdic (dict)      : Dictionnary of constants.
 
     Returns:
-        * esat (np.array): Saturation water vapor partial pressure.'''
+        * esat (np.ndarray): Saturation water vapor partial pressure.'''
 
     a1w=cdic['a1w']
     a3w=cdic['a3w']
@@ -31,23 +31,23 @@ def get_narr(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
     GRB file with weather model data can be downloaded from http://nomads.ncdc.noaa.gov/data/narr .
 
     Args:
-        * fname       (str):  Path to the grib file
-        * minlat (np.float):  Minimum latitude
-        * maxlat (np.float):  Maximum latitude
-        * minlon (np.float):  Minimum longitude
-        * maxlon (np.float):  Maximum longitude
-        * cdic   (np.float):  Dictionary of constants
+        * fname  (str)  :  Path to the grib file
+        * minlat (float):  Minimum latitude
+        * maxlat (float):  Maximum latitude
+        * minlon (float):  Minimum longitude
+        * maxlon (float):  Maximum longitude
+        * cdic   (float):  Dictionary of constants
     
     Kwargs:
-        * humidity    (str): Specific ('Q') or relative humidity ('R').
+        * humidity (str): Specific ('Q') or relative humidity ('R').
 
     Returns:
-        * lvls   (np.array): Pressure levels
-        * latlist(np.array): Latitudes of the stations
-        * lonlist(np.array): Longitudes of the stations
-        * gph    (np.array): Geopotential height
-        * tmp    (np.array): Temperature
-        * vpr    (np.array): Vapor pressure
+        * lvls    (np.ndarray): Pressure levels
+        * latlist (np.ndarray): Latitudes of the stations
+        * lonlist (np.ndarray): Longitudes of the stations
+        * gph     (np.ndarray): Geopotential height
+        * tmp     (np.ndarray): Temperature
+        * vpr     (np.ndarray): Vapor pressure
 
     .. note::
         Uses cc_narr by default.
@@ -108,18 +108,18 @@ def intdel(hgt,latlin,lonlin,delcin,spacing=0.3):
     '''Interpolates the NARR data to a regular grid with a grid spacing being the average of previous grid spaces
 
     Args:
-            * hgt     (np.array): Altitude levels
-            * latlin  (np.array): Latitudes of the stations
-            * lonlin  (np.array): Longitudes of the stations
-    * delcin  (np.array): Delay cube len(latlist)xlen(hgt)
+            * hgt     (np.ndarray): Altitude levels
+            * latlin  (np.ndarray): Latitudes of the stations
+            * lonlin  (np.ndarray): Longitudes of the stations
+            * delcin  (np.ndarray): Delay cube len(latlist)xlen(hgt)
     
     Returns:
-            * latlist (np.array): Latitudes of the stations
-            * lonlist (np.array): Longitudes of the stations
-    * delc    (np.array): Delay cube len(latlist)xlen(hgt)
+            * latlist (np.ndarray): Latitudes of the stations
+            * lonlist (np.ndarray): Longitudes of the stations
+            * delc    (np.ndarray): Delay cube len(latlist)xlen(hgt)
 
     .. note::
-            '''
+    '''
 
     # Points array
     nstn = len(latlin)
@@ -150,7 +150,13 @@ def intdel(hgt,latlin,lonlin,delcin,spacing=0.3):
 
     # Loop on the pressure levels
     for n in range(nlvls):
-        delc[:,n] = si.griddata(Points,delcin[:,n],Xi,method='cubic')#,fill_value=10*np.float(n))
+        delc[:,n] = si.griddata(
+            Points,
+            delcin[:,n],
+            Xi,
+            method='cubic',
+            #fill_value=10*float(n),
+        )
 
     return delc,latlist,lonlist
 
