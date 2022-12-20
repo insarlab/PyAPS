@@ -13,20 +13,20 @@ def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
        http://disc.sci.gsfc.nasa.gov/daac-bin/FTPSubset.pl
 
     Args:
-        * fname       (str):  Path to the grib file
-        * minlat (np.float):  Minimum latitude
-        * maxlat (np.float):  Maximum latitude
-        * minlon (np.float):  Minimum longitude
-        * maxlon (np.float):  Maximum longitude
-        * cdic   (np.float):  Dictionary of constants
+        * fname   (str)       : Path to the grib file
+        * minlat  (float)     : Minimum latitude
+        * maxlat  (float)     : Maximum latitude
+        * minlon  (float)     : Minimum longitude
+        * maxlon  (float)     : Maximum longitude
+        * cdic    (float)     : Dictionary of constants
 
     Returns:
-        * lvls   (np.array): Pressure levels
-        * latlist(np.array): Latitudes of the stations
-        * lonlist(np.array): Longitudes of the stations
-        * gph    (np.array): Geopotential height
-        * tmp    (np.array): Temperature
-        * vpr    (np.array): Vapor pressure
+        * lvls    (np.ndarray): Pressure levels
+        * latlist (np.ndarray): Latitudes of the stations
+        * lonlist (np.ndarray): Longitudes of the stations
+        * gph     (np.ndarray): Geopotential height
+        * tmp     (np.ndarray): Temperature
+        * vpr     (np.ndarray): Vapor pressure
 
         '''
 
@@ -135,20 +135,20 @@ def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
 
         #fill out the tmp and vpr array
         for i in range(nstn):
-            id = np.int(idx[i]+1)
-            for n in range(id):
+            ind = int(idx[i]+1)
+            for n in range(ind):
                 tmp[n,i] = temp[nlvls - 1 - n,ii[i],jj[i]]
-            exl = nlvls - id
+            exl = nlvls - ind
             for m in range(exl):
-                tmp[id+m,i] =  tk[i]*lvls[id+m] + tb[i]
+                tmp[ind+m,i] =  tk[i]*lvls[ind+m] + tb[i]
 
         for i in range(nstn):
-            id = np.int(idx[i]+1)
-            for n in range(id):
+            ind = int(idx[i]+1)
+            for n in range(ind):
                 vpr[n,i] = humidity[nlvls - 1- n,ii[i],jj[i]]
-            exl = nlvls - id
+            exl = nlvls - ind
             for m in range(exl):
-                vpr[id+m,i] =  hk[i]*lvls[id+m] + hb[i]
+                vpr[ind+m,i] =  hk[i]*lvls[ind+m] + hb[i]
 
         memo = list(vpr)
         memo = np.array(memo)
@@ -256,20 +256,20 @@ def get_merra(fname,minlat,maxlat,minlon,maxlon,cdic,verbose=False):
 
         #fill out the tmp and vpr array
         for i in range(nstn):
-            id = np.int(idx[i]+1)
-            for n in range(id):
+            ind = int(idx[i]+1)
+            for n in range(ind):
                 tmp[n,i] = temp[nlvls - 1 - n,ii[i],jj[i]]
-            exl = nlvls - id
+            exl = nlvls - ind
             for m in range(exl):
-                tmp[id+m,i] =  tk[i]*lvls[id+m] + tb[i]
+                tmp[ind+m,i] =  tk[i]*lvls[ind+m] + tb[i]
 
         for i in range(nstn):
-            id = np.int(idx[i]+1)
-            for n in range(id):
+            ind = int(idx[i]+1)
+            for n in range(ind):
                 vpr[n,i] = humidity[nlvls - 1- n,ii[i],jj[i]]
-            exl = nlvls - id
+            exl = nlvls - ind
             for m in range(exl):
-                vpr[id+m,i] =  hk[i]*lvls[id+m] + hb[i]
+                vpr[ind+m,i] =  hk[i]*lvls[ind+m] + hb[i]
         memo = list(vpr)
         memo = np.array(memo)
         for i in range(nlvls):

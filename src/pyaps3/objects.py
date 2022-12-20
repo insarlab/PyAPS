@@ -24,19 +24,19 @@ class PyAPS:
                  grib='era5', humidity='Q', Del='comb', model='ERA5', verb=False):
         '''Initiates the data structure for atmos corrections in geocoded domain.
         Args:
-            * gribfile (str)    : path to downloaded grib file
-            * dem (np.ndarray)  : height    in size of (length, width)
-            * lat (np.ndarray)  : latitude  in size of (length, width)
-            * lon (np.ndarray)  : longitude in size of (length, width)
+            * gribfile (str)        : path to downloaded grib file
+            * dem      (np.ndarray) : height    in size of (length, width)
+            * lat      (np.ndarray) : latitude  in size of (length, width)
+            * lon      (np.ndarray) : longitude in size of (length, width)
 
         Kwargs:
-            * inc (number/np.ndarray) : incidence angle (in size of (length, width) for np.ndarray)
-            * mask (np.ndarray) : mask of valid pixels in size of (length, width)
-            * grib (str)        : grib name in ['ERA5', 'ERAINT', 'HRES', 'NARR', 'MERRA']
-            * humidity (str)    : ['Q', 'R']
-            * Del (str)         : ['comb', 'wet', 'dry']
-            * model (str)       : ECMWF dataset name in ['era5', 'eraint', 'hres']
-            * verb (bool)       : True or False
+            * inc      (np.ndarray) : incidence angle (in size of (length, width) for np.ndarray)
+            * mask     (np.ndarray) : mask of valid pixels in size of (length, width)
+            * grib     (str)        : grib name in ['ERA5', 'ERAINT', 'HRES', 'NARR', 'MERRA']
+            * humidity (str)        : ['Q', 'R']
+            * Del      (str)        : ['comb', 'wet', 'dry']
+            * model    (str)        : ECMWF dataset name in ['era5', 'eraint', 'hres']
+            * verb     (bool)       : True or False
 
         .. note::
             For ISCE products, lat/lon can be read from lat/lon.rdr file
@@ -124,42 +124,53 @@ class PyAPS:
         #--------- Extract infos from gribfiles
         if self.grib in ('ERA'):
             assert False, 'Need to modify get_era to fit with the new standards'
-            [lvls,latlist,lonlist,gph,tmp,vpr] = era.get_era(self.gfile,
-                                                             self.minlat,
-                                                             self.maxlat,
-                                                             self.minlon,
-                                                             self.maxlon,
-                                                             self.dict,
-                                                             humidity=self.humidity,
-                                                             verbose=verb)
+            [lvls,latlist,lonlist,gph,tmp,vpr] = era.get_era(
+                self.gfile,
+                self.minlat,
+                self.maxlat,
+                self.minlon,
+                self.maxlon,
+                self.dict,
+                humidity=self.humidity,
+                verbose=verb,
+            )
+
         elif self.grib in ('ERA5','ERAINT','HRES'):
-            [lvls,latlist,lonlist,gph,tmp,vpr] = era.get_ecmwf(self.model,
-                                                               self.gfile,
-                                                               self.minlat,
-                                                               self.maxlat,
-                                                               self.minlon,
-                                                               self.maxlon,
-                                                               self.dict,
-                                                               humidity=self.humidity,
-                                                               verbose=verb)
+            [lvls,latlist,lonlist,gph,tmp,vpr] = era.get_ecmwf(
+                self.model,
+                self.gfile,
+                self.minlat,
+                self.maxlat,
+                self.minlon,
+                self.maxlon,
+                self.dict,
+                humidity=self.humidity,
+                verbose=verb,
+            )
+
         elif self.grib in ('NARR'):
             assert False, 'Need to modify get_narr to fit with the new standards'
-            [lvls,latlist,lonlist,gph,tmp,vpr] = narr.get_narr(self.gfile,
-                                                               self.minlat,
-                                                               self.maxlat,
-                                                               self.minlon,
-                                                               self.maxlon,
-                                                               self.dict,
-                                                               verbose=verb)
+            [lvls,latlist,lonlist,gph,tmp,vpr] = narr.get_narr(
+                self.gfile,
+                self.minlat,
+                self.maxlat,
+                self.minlon,
+                self.maxlon,
+                self.dict,
+                verbose=verb,
+            )
+
         elif self.grib in ('MERRA'):
             assert False, 'Need to modify get_merra to fit with the new standards'
-            [lvls,latlist,lonlist,gph,tmp,vpr] = merra.get_merra(self.gfile,
-                                                                 self.minlat,
-                                                                 self.maxlat,
-                                                                 self.minlon,
-                                                                 self.maxlon,
-                                                                 self.dict,
-                                                                 verbose=verb)
+            [lvls,latlist,lonlist,gph,tmp,vpr] = merra.get_merra(
+                self.gfile,
+                self.minlat,
+                self.maxlat,
+                self.minlon,
+                self.maxlon,
+                self.dict,
+                verbose=verb,
+            )
             lonlist[lonlist < 0.] += 360.0
 
         # Make a height scale
@@ -253,11 +264,13 @@ class PyAPS:
         # Define a linear interpolating function on the 3D grid: ((x, y, z), data)
         # We do the weird trick of [::-1,:,:] because Latu has to be in increasing order 
         # for the RegularGridInterpolator method of scipy.interpolate
-        linearint = si.RegularGridInterpolator((Latu[::-1], Lonu,kh), 
-                                               self.Delfn_1m[::-1,:,:],
-                                               method='linear', 
-                                               bounds_error=False, 
-                                               fill_value = 0.0)
+        linearint = si.RegularGridInterpolator(
+            (Latu[::-1], Lonu,kh),
+            self.Delfn_1m[::-1,:,:],
+            method='linear',
+            bounds_error=False,
+            fill_value=0.0,
+        )
 
         # Show progress bar
         if self.verb:

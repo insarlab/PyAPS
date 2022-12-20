@@ -103,12 +103,12 @@ def read_metadata(fname, latfile=None, lonfile=None, full=False, verbose=False):
         * fname (str): Path to the ROIPAC or ISCE data file.
 
     Returns:
-        * lat (np.array) : Array of lat of the 4 corners.
-        * lon (np.array) : Array of lon of the 4 corners.
-        * nx  (np.int)   : Number of range bins.
-        * ny  (np.int)   : Number of azimuth lines.
-        * dpix (np.float): Average pixel spacing.
-        * meta (dict)    : Dictionary of metadata [return if full==True]
+        * lat  (np.ndarray): Array of lat of the 4 corners.
+        * lon  (np.ndarray): Array of lon of the 4 corners.
+        * nx   (int)       : Number of range bins.
+        * ny   (int)       : Number of azimuth lines.
+        * dpix (float)     : Average pixel spacing.
+        * meta (dict)      : Dictionary of metadata [return if full==True]
     '''
     # get meta file extension
     meta_exts = [i for i in ['.rsc','.xml'] if os.path.isfile(fname+i)]
@@ -165,7 +165,7 @@ def read_metadata(fname, latfile=None, lonfile=None, full=False, verbose=False):
 
 def read_isce_xml(xmlfile):
     """Read ISCE XML file into dict.
-    Add from PySAR/pysar/utils/readfile.py by Zhang Yunjun
+    Add from mintpy.utils.readfile.py by Zhang Yunjun
     """
     import xml.etree.ElementTree as ET
     meta = {}
@@ -227,7 +227,7 @@ def read_isce_data(fname, dname=None):
 
 def get_isce_lalo_ref(lat_file, lon_file):
     """Get LAT/LON_REF1/2/3/4 value from ISCE lat/lon.rdr file
-    Add from PySAR/pysar/prep_isce.py by Zhang Yunjun
+    Add from mintpy.prep_isce.py by Zhang Yunjun
     """
 
     def get_nonzero_row_number(data, buffer=2):
@@ -311,11 +311,11 @@ def rd_rsc(inname,full=False,verbose=False):
         * inname (str): Path to the RSC file.
 
     Returns:
-        * lat (np.array) : Array of lat of the 4 corners.
-        * lon (np.array) : Array of lon of the 4 corners.
-        * nx  (np.int)   : Number of range bins.
-        * ny  (np.int)   : Number of azimuth lines.
-        * dpix (np.float): Average pixel spacing.
+        * lat  (np.ndarray): Array of lat of the 4 corners.
+        * lon  (np.ndarray): Array of lon of the 4 corners.
+        * nx   (int)       : Number of range bins.
+        * ny   (int)       : Number of azimuth lines.
+        * dpix (float)     : Average pixel spacing.
 
     .. note:: 
         Currently set up to work with SIM_nrlks.hgt from ROI-PAC.'''
@@ -342,22 +342,20 @@ def rd_rsc(inname,full=False,verbose=False):
     infile.close()
 
     # prepare output
-    nx = np.int(rpacdict['WIDTH'])
-    ny = np.int(rpacdict['FILE_LENGTH'])
+    nx = int(rpacdict['WIDTH'])
+    ny = int(rpacdict['FILE_LENGTH'])
     lat=np.zeros((4,1))
     lon=np.zeros((4,1))
-    lat[0] = np.float(rpacdict['LAT_REF1'])
-    lon[0] = np.float(rpacdict['LON_REF1'])
-    lat[1] = np.float(rpacdict['LAT_REF2'])
-    lon[1] = np.float(rpacdict['LON_REF2'])
-    lat[2] = np.float(rpacdict['LAT_REF3'])
-    lon[2] = np.float(rpacdict['LON_REF3'])
-    lat[3] = np.float(rpacdict['LAT_REF4'])
-    lon[3] = np.float(rpacdict['LON_REF4'])
-    #rgpix = np.float(rpacdict['RANGE_PIXEL_SIZE'])
-    #azpix = np.float(rpacdict['AZIMUTH_PIXEL_SIZE'])
-    rgpix = 90.0
-    azpix = 90.0
+    lat[0] = float(rpacdict['LAT_REF1'])
+    lon[0] = float(rpacdict['LON_REF1'])
+    lat[1] = float(rpacdict['LAT_REF2'])
+    lon[1] = float(rpacdict['LON_REF2'])
+    lat[2] = float(rpacdict['LAT_REF3'])
+    lon[2] = float(rpacdict['LON_REF3'])
+    lat[3] = float(rpacdict['LAT_REF4'])
+    lon[3] = float(rpacdict['LON_REF4'])
+    rgpix = 90.0   # float(rpacdict['RANGE_PIXEL_SIZE'])
+    azpix = 90.0   # float(rpacdict['AZIMUTH_PIXEL_SIZE'])
     dpix = np.sqrt(6.25*rgpix*rgpix+azpix*azpix)
     if full:
         return lon,lat,nx,ny,dpix,rpacdict
@@ -374,13 +372,13 @@ def geo_rsc(inname,full=False,verbose=False):
         * inname (str): Path to the RSC file.
 
     Returns:
-        * lon (np.array) : Array of min and max lon values.
-        * lat (np.array) : Array of min and max lat values.
-        * nx  (np.int)   : Number of lon bins.
-        * ny  (np.int)   : Number of lat bins.
+        * lon (np.ndarray): Array of min and max lon values.
+        * lat (np.ndarray): Array of min and max lat values.
+        * nx  (int)       : Number of lon bins.
+        * ny  (int)       : Number of lat bins.
 
-        .. note:: 
-            Currently set up to work with dem.rsc file from ROI-PAC.'''
+    .. note:: 
+        Currently set up to work with dem.rsc file from ROI-PAC.'''
 
     if verbose:
         print("PROGRESS: READING %s RSC FILE" %inname)
@@ -395,17 +393,17 @@ def geo_rsc(inname,full=False,verbose=False):
         line = infile.readline()
     infile.close()
 
-    nx = np.int(rpacdict['WIDTH'])
-    ny = np.int(rpacdict['FILE_LENGTH'])
+    nx = int(rpacdict['WIDTH'])
+    ny = int(rpacdict['FILE_LENGTH'])
     lat=np.zeros((2,1))
     lon=np.zeros((2,1))
-    lat[1] = np.float(rpacdict['Y_FIRST'])
-    lon[0] = np.float(rpacdict['X_FIRST'])
+    lat[1] = float(rpacdict['Y_FIRST'])
+    lon[0] = float(rpacdict['X_FIRST'])
     if(lon[0] < 0):
         lon[0] = lon[0] + 360.0
 
-    dx = np.float(rpacdict['X_STEP'])
-    dy = np.float(rpacdict['Y_STEP'])
+    dx = float(rpacdict['X_STEP'])
+    dy = float(rpacdict['Y_STEP'])
 
     lat[0] = lat[1] + dy*ny
     lon[1] = lon[0] + dx*nx
@@ -495,19 +493,19 @@ def glob2rdr(nx,ny,lat,lon,latl,lonl,plotflag='n'):
        spacing of the simulation.
 
     Args:
-        * nx   (np.int)   : Number of range bins.
-        * ny   (np.int)   : Number of azimuth lines.
-        * lat  (np.array) : Array of latitudes of the corners
-        * lon  (np.array) : Array of longitudes of the corners
-        * latl (np.array) : Latitudes of the stations.
-        * lonl (np.array) : Longitudes of the stations.
+        * nx   (int)        : Number of range bins.
+        * ny   (int)        : Number of azimuth lines.
+        * lat  (np.ndarray) : Array of latitudes of the corners
+        * lon  (np.ndarray) : Array of longitudes of the corners
+        * latl (np.ndarray) : Latitudes of the stations.
+        * lonl (np.ndarray) : Longitudes of the stations.
 
     Kwargs:
-        * plotflag (bool) : Plot the stations distribution.
+        * plotflag (bool)   : Plot the stations distribution.
 
     Returns:
-        * xi (np.array)   : Position of stations in range.
-        * yi (np.array)   : Position of stations in azimuth.
+        * xi (np.ndarray)   : Position of stations in range.
+        * yi (np.ndarray)   : Position of stations in azimuth.
 
     .. note::
         Mapping function is :
@@ -565,24 +563,24 @@ def rdr2glob(wid,lgt,lat,lon,x,y,plotflag='n'):   #nx,ny,lat,lon,latl,lonl,plotf
     of the 4 corners
 
     Args:
-            * wid  (np.int)   : Width of the image (i.e. number of range bins)
-            * lgt  (np.int)   : Length of the image (i.e. number of azimuth lines)
-            * lat  (np.array) : Array of latitudes of the corners
-            * lon  (np.array) : Array of longitudes of the corners
-            * rang (np.array) : Range of the points to transfert
-            * azim (np.array) : Azimuth of the points to transfert
+            * wid  (int)        : Width of the image (i.e. number of range bins)
+            * lgt  (int)        : Length of the image (i.e. number of azimuth lines)
+            * lat  (np.ndarray) : Array of latitudes of the corners
+            * lon  (np.ndarray) : Array of longitudes of the corners
+            * rang (np.ndarray) : Range of the points to transfert
+            * azim (np.ndarray) : Azimuth of the points to transfert
 
     Kwargs:
-    * plotflag (bool) : Plot the stations distribution.
+            * plotflag (bool)   : Plot the stations distribution.
 
     Returns:
-            * loni (np.array)   : Longitude of the points.
-            * lati (np.array)   : Latitude of the points.
+            * loni (np.ndarray) : Longitude of the points.
+            * lati (np.ndarray) : Latitude of the points.
 
     .. note::
             Mapping function is :
-    * lat = a1*rang + b1*azim + c1
-    * lon = a2*rang + b2*azim + c2
+            * lat = a1*rang + b1*azim + c1
+            * lon = a2*rang + b2*azim + c2
             * First  point is (1,1)   i.e. Near Range, First Lane <==> Lat[1],Lon[1]
             * Second point is (nx,1)  i.e. Far Range, First Lane <==> Lat[2],Lon[2]
             * Third  point is (1,ny)  i.e. Near Range, Last Lane <==> Lat[3],Lon[3]
@@ -663,14 +661,14 @@ class ProgressBar:
         self.amount = newAmount
 
         # Figure out the new percent done, round to an integer
-        diffFromMin = np.float(self.amount - self.min)
-        percentDone = (diffFromMin / np.float(self.span)) * 100.0
-        percentDone = np.int(np.round(percentDone))
+        diffFromMin = float(self.amount - self.min)
+        percentDone = (diffFromMin / float(self.span)) * 100.0
+        percentDone = int(np.round(percentDone))
 
         # Figure out how many hash bars the percentage should be
         allFull = self.width - 2 - 18
         numHashes = (percentDone / 100.0) * allFull
-        numHashes = np.int(np.round(numHashes))
+        numHashes = int(np.round(numHashes))
 
         # Build a progress bar with an arrow of equal signs; special cases for
         # empty and full
