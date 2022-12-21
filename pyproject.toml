@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm[toml]", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyaps3"
+description = "Python based Atmospheric Phase Screen estimation"
+authors = [
+    {name="Romain Jolivet", email="insar@geologie.ens.fr"},
+    {name="Angelique Benoit"},
+]
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["InSAR", "troposphere", "geodesy", "geophysics", "ERA5"]
+license = {text = "GPL-3.0-or-later"}
+classifiers=[
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "cdsapi",
+    "matplotlib",
+    "numpy",
+    "pygrib",
+    "scipy",
+    "urllib3",
+    #"netcdf4",   # for MERRA, which is currently not supported
+    #"pyhdf",     # for MERRA, which is currently not supported
+]
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/insarlab/PyAPS"
+"Bug Tracker" = "https://github.com/insarlab/PyAPS/issues"
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+pysolid = ["*.cfg"]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "no-local-version"

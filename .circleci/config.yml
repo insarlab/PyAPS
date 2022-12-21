@@ -36,7 +36,7 @@ jobs:
           command: |
             apt update
             apt-get update --yes && apt-get upgrade --yes
-            apt-get install --yes wget
+            apt-get install --yes git wget
             # download and install miniconda3
             mkdir -p ${HOME}/tools
             cd ${HOME}/tools
@@ -45,23 +45,21 @@ jobs:
             ${HOME}/tools/miniconda3/bin/conda init bash
             ${HOME}/tools/miniconda3/bin/conda config --add channels conda-forge
             ${HOME}/tools/miniconda3/bin/conda install -c conda-forge --yes mamba
+            # modify/export env var PATH to BASH_ENV to be shared across run steps
+            echo 'export PATH=${CONDA_PREFIX}/bin:${PATH}' >> ${BASH_ENV}
+
       - run:
           name: Installing PyAPS
           no_output_timeout: 10m
           command: |
             export PYTHONUNBUFFERED=1
-            # setup environment variable
-            export PATH=${CONDA_PREFIX}/bin:${PATH}
             # install dependencies
             source activate root
-            mamba install --verbose --yes  fortran-compiler --file ${HOME}/tools/PyAPS/requirements.txt
+            mamba install --verbose --yes --file ${HOME}/tools/PyAPS/requirements.txt
             python -m pip install ${HOME}/tools/PyAPS
 
       - run:
           name: Test the Installation
           command: |
-            # setup environment variables
-            export PATH=${CONDA_PREFIX}/bin:${PATH}
-            # run tests
             python ${HOME}/tools/PyAPS/tests/test_calc.py
 
