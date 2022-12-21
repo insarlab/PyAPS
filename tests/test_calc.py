@@ -5,6 +5,8 @@
 import os
 import numpy as np
 from matplotlib import pyplot as plt
+plt.rcParams.update({'font.size': 12})
+
 import pyaps3 as pa
 
 
@@ -33,11 +35,16 @@ phs = obj2.getdelay() - obj1.getdelay()
 
 # plot
 date12 = '{}_{}'.format(grb_file1.split('_')[-2], grb_file2.split('_')[-2])
-fig, ax = plt.subplots(figsize=[5, 7])
-im = ax.imshow(phs*100., interpolation='nearest')
-ax.set_title(date12)
-cbar = fig.colorbar(im, ax=ax)
-cbar.set_label('Tropospheric delay [cm]')
+titles = [f'Tropospheric delay\n{date12}', 'Height']
+fig, axs = plt.subplots(nrows=1, ncols=2, figsize=[10, 6])
+for ax, data, title in zip(axs, [phs, dem], titles):
+    im = ax.imshow(data, interpolation='nearest')
+    # axis format
+    ax.invert_yaxis()
+    ax.set_title(title)
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label('meter')
+fig.tight_layout()
 
 print('------------------------------------------------')
 print('Passed tropospheric delay calculation from ERA5.')
