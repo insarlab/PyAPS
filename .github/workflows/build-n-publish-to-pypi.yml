@@ -67,8 +67,7 @@ jobs:
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
-          # tolerate release package file duplicates for TestPyPI
-          skip_existing: true
+          skip_existing: false
           verbose: true
 
       - name: Publish released version 📦 to PyPI
@@ -77,3 +76,4 @@ jobs:
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
           verbose: true
+
