@@ -61,13 +61,6 @@ jobs:
           name: artifact
           path: dist
 
-      - name: Publish released version 📦 to PyPI
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          verbose: true
-
       - name: Publish developed version 📦 to Test PyPI
         if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main'
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -75,5 +68,12 @@ jobs:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
           skip_existing: false
+          verbose: true
+
+      - name: Publish released version 📦 to PyPI
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
           verbose: true
 
