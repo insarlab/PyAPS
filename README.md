@@ -1,8 +1,9 @@
-[![Language](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
-[![CircleCI](https://img.shields.io/circleci/build/github/insarlab/PyAPS.svg?logo=circleci&label=test)](https://circleci.com/gh/insarlab/PyAPS)
-[![Version](https://img.shields.io/github/v/release/insarlab/PyAPS?color=green)](https://github.com/insarlab/PyAPS/releases)
-[![License](https://img.shields.io/badge/license-GPLv3+-yellow.svg)](https://github.com/insarlab/PyAPS/blob/main/LICENSE)
-[![Citation](https://img.shields.io/badge/doi-10.1029%2F2011GL048757-blue)](https://doi.org/10.1029/2011GL048757)
+[![Language](https://img.shields.io/badge/python-3.8%2B-blue.svg?style=flat-square)](https://www.python.org/)
+[![CircleCI](https://img.shields.io/circleci/build/github/insarlab/PyAPS.svg?logo=circleci&label=test&style=flat-square)](https://circleci.com/gh/insarlab/PyAPS)
+[![Version](https://img.shields.io/github/v/release/insarlab/PyAPS?color=brightgreen&label=version&style=flat-square)](https://github.com/insarlab/PyAPS/releases)
+[![Conda Download](https://img.shields.io/conda/dn/conda-forge/pyaps3?color=green&style=flat-square)](https://anaconda.org/conda-forge/pyaps3)
+[![License](https://img.shields.io/badge/license-GPLv3+-yellow.svg?style=flat-square)](https://github.com/insarlab/PyAPS/blob/main/LICENSE)
+[![Citation](https://img.shields.io/badge/doi-10.1029%2F2011GL048757-blue?style=flat-square)](https://doi.org/10.1029/2011GL048757)
 
 ## PyAPS - Python based Atmospheric Phase Screen estimation
 
@@ -83,4 +84,4 @@ python PyAPS/tests/test_dload.py
 
 The methodology and validation can be found in:
 
-+ Jolivet, R., R. Grandin, C. Lasserre, M.-P. Doin and G. Peltzer (2011), Systematic InSAR tropospheric phase delay corrections from global meteorological reanalysis data, _Geophys. Res. Lett., 38,_ L17311, doi:10.1029/2011GL048757.
++ Jolivet, R., R. Grandin, C. Lasserre, M.-P. Doin and G. Peltzer (2011), Systematic InSAR tropospheric phase delay corrections from global meteorological reanalysis data, _Geophys. Res. Lett., 38,_ L17311, doi:[10.1029/2011GL048757](https://doi.org/10.1029/2011GL048757).
