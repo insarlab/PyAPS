@@ -264,7 +264,7 @@ class PyAPS:
         # Define a linear interpolating function on the 3D grid: ((x, y, z), data)
         # We do the weird trick of [::-1,:,:] because Latu has to be in increasing order 
         # for the RegularGridInterpolator method of scipy.interpolate
-        linearint = si.RegularGridInterpolator(
+        linear_interp_func = si.RegularGridInterpolator(
             (Latu[::-1], Lonu,kh),
             self.Delfn_1m[::-1,:,:],
             method='linear',
@@ -307,7 +307,9 @@ class PyAPS:
 
             # Make the bilinear interpolation
             D = self.dem[m,:]
-            val = linearint(np.vstack((lati, loni, D)).T)*np.pi*4.0/(cinc*wvl)
+            val = linear_interp_func(
+                np.ascontiguousarray(np.vstack((lati, loni, D)).T)
+            ) * np.pi * 4.0 / (cinc * wvl)
             val[xx] = np.nan
 
             # save output
