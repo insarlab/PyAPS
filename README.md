@@ -1,8 +1,8 @@
 [![Language](https://img.shields.io/badge/python-3.8%2B-blue.svg?style=flat-square)](https://www.python.org/)
-[![CircleCI](https://img.shields.io/circleci/build/github/insarlab/PyAPS.svg?logo=circleci&label=test&style=flat-square)](https://circleci.com/gh/insarlab/PyAPS)
-[![Version](https://img.shields.io/github/v/release/insarlab/PyAPS?color=brightgreen&label=version&style=flat-square)](https://github.com/insarlab/PyAPS/releases)
-[![Conda Download](https://img.shields.io/conda/dn/conda-forge/pyaps3?color=green&style=flat-square)](https://anaconda.org/conda-forge/pyaps3)
-[![License](https://img.shields.io/badge/license-GPLv3+-yellow.svg?style=flat-square)](https://github.com/insarlab/PyAPS/blob/main/LICENSE)
+[![CircleCI](https://img.shields.io/circleci/build/github/insarlab/PyAPS.svg?logo=circleci&label=tests&style=flat-square)](https://circleci.com/gh/insarlab/PyAPS)
+[![Conda Download](https://img.shields.io/conda/dn/conda-forge/pyaps3?color=green&label=conda%20downloads&style=flat-square)](https://anaconda.org/conda-forge/pyaps3)
+[![Version](https://img.shields.io/github/v/release/insarlab/PyAPS?color=yellow&label=version&style=flat-square)](https://github.com/insarlab/PyAPS/releases)
+[![License](https://img.shields.io/badge/license-GPLv3+-blue.svg?style=flat-square)](https://github.com/insarlab/PyAPS/blob/main/LICENSE)
 [![Citation](https://img.shields.io/badge/doi-10.1029%2F2011GL048757-blue?style=flat-square)](https://doi.org/10.1029/2011GL048757)
 
 ## PyAPS - Python based Atmospheric Phase Screen estimation
