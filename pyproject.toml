@@ -45,7 +45,7 @@ zip-safe = false
 where = ["src"]
 
 [tool.setuptools.package-data]
-pysolid = ["*.cfg"]
+pyaps3 = ["*.cfg"]
 
 [tool.setuptools_scm]
 version_scheme = "post-release"
