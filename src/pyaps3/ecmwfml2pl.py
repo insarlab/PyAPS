@@ -254,6 +254,6 @@ def ECMWFml2pl(input_fname, output_fname, plevels):
     all_interpolated_var_fields = all_interpolated_var_fields.rename({'gph':'z'})
     all_interpolated_var_fields['pressure'].attrs = {'units' : 'Pa','long_name':'pressure',
                                                      'standard_name':'air_pressure','positive':'down'}
-    all_interpolated_var_fields.to_netcdf(output_fname,format='NETCDF', engine='netcdf4',
+    all_interpolated_var_fields.to_netcdf(output_fname,format='NETCDF4', engine='netcdf4',
                                           encoding={'z': {'zlib': True, 'complevel': 4}})
     all_interpolated_var_fields.close()
