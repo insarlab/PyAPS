@@ -32,6 +32,7 @@ PV_COEFF_A = np.array([
     3955.960938, 3489.234375, 3057.265625, 2659.140625, 2294.242188, 1961.5, 1659.476563, 1387.546875, 1143.25,
     926.507813, 734.992188, 568.0625, 424.414063, 302.476563, 202.484375, 122.101563, 62.78125, 22.835938,
     3.757813, 0.0, 0.0])
+
 PV_COEFF_B = np.array([
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -189,8 +190,15 @@ def check_data_cube(dc):
                 checks = False
     return checks
 
-def convert_ml_to_pl(input_fname, output_fname, plevels):
-    '''Convert the model level netcdf to pressure level netcdf'''
+def ECMWFmltopl(input_fname, output_fname, plevels):
+    '''
+    Convert the ECMWF model level netcdf to pressure level netcdf
+
+    Args:
+        * input_fname   : input ECMWF file at model level in netcdf format (str)
+        * output_fname  : output pressure level in netcdf format (str)
+        * plevels       : pressure levels in Pa (list)
+    '''
 
     check_requested_levels(plevels)
 
