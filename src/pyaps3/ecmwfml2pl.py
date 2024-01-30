@@ -190,7 +190,7 @@ def check_data_cube(dc):
                 checks = False
     return checks
 
-def ECMWFmltopl(input_fname, output_fname, plevels):
+def ECMWFml2pl(input_fname, output_fname, plevels):
     '''
     Convert the ECMWF model level netcdf to pressure level netcdf
 
