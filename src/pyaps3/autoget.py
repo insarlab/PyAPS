@@ -136,7 +136,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
         # CASE 2: request for WEB API client (old ECMWF platform, deprecated, for ERA-Int and HRES)
         else:
             # Contact the server
-            from pa.ecmwfapi import ECMWFDataServer
+            from pyaps3.ecmwfapi import ECMWFDataServer
             url = "https://api.ecmwf.int/v1"
             emid = config.get('ECMWF', 'email')
             key = config.get('ECMWF', 'key')
