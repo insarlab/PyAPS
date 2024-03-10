@@ -69,7 +69,7 @@ url: https://cds.climate.copernicus.eu/api/v2
 key: 12345:abcdefghij-134-abcdefgadf-82391b9d3f
 ```
 
-where 12345 is your personal user ID (UID), the part behind the colon is your personal API key. More details can be found [here](https://cds.climate.copernicus.eu/api-how-to). Alternatively, you could also edit the `model.cfg` file in the package directory, `site-packages/pyaps3` if installed via conda, and fill in the `[CDS]` section.
+where 12345 is your personal user ID (UID), the part behind the colon is your personal API key. More details can be found [here](https://cds.climate.copernicus.eu/api-how-to). Alternatively, you could edit the `model.cfg` file in the package directory, `site-packages/pyaps3` if installed via conda, and fill in the `[CDS]` section.
 
 + **Make sure** that you accept the data license in the Terms of use on ECMWF website.
 
