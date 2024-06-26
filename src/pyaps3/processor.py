@@ -216,13 +216,13 @@ def PTV2del(Presi,Tempi,Vpri,hgt,cdict,verbose=False):
     DDry2[:,:,:] = k1*Rd*(Presi[:,:,:] - Presi[:,:,-1][:,:,np.newaxis])*1.0e-6/g
 
     #Wet delay
-    S1 = intg.cumtrapz(WonT,x=hgt,axis=-1)
+    S1 = intg.cumulative_trapezoid(WonT,x=hgt,axis=-1)
     val = 2*S1[:,:,-1]-S1[:,:,-2]
     val = val[:,:,None]
     S1 = np.concatenate((S1,val),axis=-1)
     del WonT
 
-    S2 = intg.cumtrapz(WonT2,x=hgt,axis=-1)
+    S2 = intg.cumulative_trapezoid(WonT2,x=hgt,axis=-1)
     val = 2*S2[:,:,-1]-S2[:,:,-2]
     val = val[:,:,None]
     S2 = np.concatenate((S2,val),axis=-1)
