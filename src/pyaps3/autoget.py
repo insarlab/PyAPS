@@ -48,8 +48,8 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
         print('WARNING: you are downloading from the old ECMWF platform. '
               'ERA-Interim is deprecated, use ERA-5 instead.')
     if model in 'ERA5':
-        print('INFO: You are using the latest ECMWF platform for downloading datasets: '
-              'https://cds.climate.copernicus.eu/api/v2')
+        cds_url = 'https://cds-beta.climate.copernicus.eu/api'
+        print('INFO: You are using the latest ECMWF platform for downloading datasets: ', cds_url)
 
     #-------------------------------------------
     # Define parameters
@@ -91,14 +91,14 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
         fname = flist[i]
 
         #-------------------------------------------
-        # CASE 1: request for CDS API client (new ECMWF platform, for ERA5)    
+        # CASE 1: request for CDS API client (new ECMWF platform, for ERA5)
         if model in 'ERA5':
             # Contact the server
             rc_file = os.path.expanduser('~/.cdsapirc')
             if os.path.isfile(rc_file):
                 c = cdsapi.Client()
             else:
-                url = 'https://cds.climate.copernicus.eu/api/v2'
+                url = cds_url
                 key = config.get('CDS', 'key')
                 c = cdsapi.Client(url=url, key=key)
 
@@ -206,7 +206,7 @@ def MERRAdload(bdate,hr,filedir, hdf=False):
         else:
             weburl = '%s%s%s%s%s%s%s%s%s%s%s%s%s' %(url1,yr,url2,mon,url3n,date,url4,hr,url5,hr,url6n,date,url7)
         dir = '%s' %(filename)
-                
+
         if not os.path.exists(dir):
             #urllib3.urlretrieve(weburl,dir)
             dloadCmd = 'wget "{}" --user {} --password {} -O {}'.format(weburl, user, pw, filename)
@@ -222,7 +222,7 @@ def NARRdload(bdate,hr,filedir):
         os.makedirs(filedir)
         print('create foler: {}'.format(filedir))
 
-    flist = []      
+    flist = []
     for i, day in enumerate(bdate):
         webdir = day[0:6]
         fname = 'narr-a_221_%s_%s00_000.grb'%(day,hr)

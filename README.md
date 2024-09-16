@@ -7,7 +7,7 @@
 
 ## PyAPS - Python based Atmospheric Phase Screen estimation
 
-This python 3 module estimates differential phase delay maps due to the stratified atmosphere for correcting radar interferograms. It is rewritten in Python 3 language from PYAPS source code and adapted for ECMWF's ERA-5 corrections. 
+This python 3 module estimates differential phase delay maps due to the stratified atmosphere for correcting radar interferograms. It is rewritten in Python 3 language from PYAPS source code and adapted for ECMWF's ERA-5 corrections.
 
 WARNING: The current version does not work with NARR and MERRA datasets. Contributions are welcomed.
 
@@ -59,19 +59,20 @@ python PyAPS/tests/test_calc.py
 
 ### 2. Account setup for [ERA5](https://retostauffer.org/code/Download-ERA5/)
 
-ERA5 data set is redistributed over the Copernicus Climate Data Store (CDS). Registration is required for the data access and downloading.
+Starting from 26 September 2024, ERA5 data set is redistributed over the Copernicus Climate Data Store (CDS)-beta ([guidlines](https://confluence.ecmwf.int/display/CKB/Please+read%3A+CDS+and+ADS+migrating+to+new+infrastructure%3A+Common+Data+Store+%28CDS%29+Engine)). Registration is required for the data access and downloading.
 
-+ [Create a new account](https://cds.climate.copernicus.eu/user/register) on the CDS website if you don't own a user account yet. 
-+ Create the local file `$HOME/.cdsapirc` and add the following two lines:
+
++ [Create a new account](https://cds.climate.copernicus.eu/user/register) on the CDS website if you don't own a user account yet.
++ [CDS API setup](https://cds-beta.climate.copernicus.eu/how-to-api#install-the-cds-api-client): Create the local file `$HOME/.cdsapirc` and add the following two lines:
 
 ```shell
-url: https://cds.climate.copernicus.eu/api/v2
-key: 12345:abcdefghij-134-abcdefgadf-82391b9d3f
+url: https://cds-beta.climate.copernicus.eu/api
+key: your-personal-access-token
 ```
 
-where 12345 is your personal user ID (UID), the part behind the colon is your personal API key. More details can be found [here](https://cds.climate.copernicus.eu/api-how-to). Alternatively, you could edit the `model.cfg` file in the package directory, `site-packages/pyaps3` if installed via conda, and fill in the `[CDS]` section.
+Your Personal Access Token can be found under the [setup guide](https://cds-beta.climate.copernicus.eu/how-to-api#install-the-cds-api-client) or under [Your profile > Personal Access Token](https://cds-beta.climate.copernicus.eu/profile). Alternatively, you could add the token to the `[CDS]` section in `model.cfg` file in the package directory, `site-packages/pyaps3` if installed via conda. Do not put the personal user ID (UID) there, it won't be recognized. Also, if you use your [old API Key](https://cds.climate.copernicus.eu/user/311901), it leads to a 401 Client Error and Authentication failed.
 
-+ **Make sure** that you accept the data license in the Terms of use on ECMWF website.
++ **Make sure** that you accept the data license in the Terms of use on ECMWF website: Login, under [Datasets > ERA5 hourly data on pressure levels from 1940 to present > Download > Terms of use](https://cds-beta.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels?tab=download), click **Accept** to accespt the license to use Copernicus Products.
 
 + Test the account setup by running:
 
