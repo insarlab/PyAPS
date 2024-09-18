@@ -1,14 +1,7 @@
-# for running
 cdsapi>=0.7.0
-matplotlib
 numpy
 pygrib
 scipy
 urllib3
 #netcdf4  #for MERRA, which is currently not supported
 #pyhdf    #for MERRA, which is currently not supported
-# for packaging and installation
-pip
-setuptools
-setuptools_scm
-wheel
