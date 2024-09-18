@@ -1,5 +1,5 @@
 # for running
-cdsapi
+cdsapi>=0.7.0
 matplotlib
 numpy
 pygrib
