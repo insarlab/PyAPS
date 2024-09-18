@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0", "setuptools_scm[toml]", "wheel"]
+requires = ["setuptools>=64.0", "setuptools_scm[toml]>=8", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -9,8 +9,8 @@ authors = [
     {name="Romain Jolivet", email="insar@geologie.ens.fr"},
     {name="Angelique Benoit"},
 ]
-readme = "README.md"
 requires-python = ">=3.8"
+
 keywords = ["InSAR", "troposphere", "geodesy", "geophysics", "ERA5"]
 license = {text = "GPL-3.0-or-later"}
 classifiers=[
@@ -21,25 +21,27 @@ classifiers=[
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
 ]
-dependencies = [
-    "cdsapi>=0.7.0",
-    "matplotlib",
-    "numpy",
-    "pygrib",
-    "scipy",
-    "urllib3",
-    #"netcdf4",   # for MERRA, which is currently not supported
-    #"pyhdf",     # for MERRA, which is currently not supported
-]
-dynamic = ["version"]
+
+# see section: setuptools_scm
+# https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html#dynamic-metadata
+# dependencies will be read from text files
+dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
 
 [project.urls]
 "Homepage" = "https://github.com/insarlab/PyAPS"
-"Bug Tracker" = "https://github.com/insarlab/PyAPS/issues"
+"Issues" = "https://github.com/insarlab/PyAPS/issues"
 
 [tool.setuptools]
 include-package-data = true
 zip-safe = false
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+readme = { file = ["README.md"], content-type = "text/markdown" }
+
+# extra requirements: `pip install pyaps3[test]` or `pip install .[test]`
+[tool.setuptools.dynamic.optional-dependencies.test]
+file = ["tests/requirements.txt"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

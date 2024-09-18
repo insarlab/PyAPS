@@ -54,7 +54,7 @@ jobs:
             export PYTHONUNBUFFERED=1
             # install dependencies and source code
             source activate root
-            mamba install --verbose --yes --file ${PYAPS_HOME}/requirements.txt
+            mamba install --verbose --yes --file ${PYAPS_HOME}/requirements.txt --file ${PYAPS_HOME}/tests/requirements.txt
             python -m pip install ${PYAPS_HOME}
 
       - run:
