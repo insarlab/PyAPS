@@ -7,7 +7,7 @@
 
 ## PyAPS - Python based Atmospheric Phase Screen estimation
 
-This python 3 module estimates differential phase delay maps due to the stratified atmosphere for correcting radar interferograms. It is rewritten in Python 3 language from PYAPS source code and adapted for ECMWF's ERA-5 corrections.
+This Python 3 module estimates differential phase delay maps due to the stratified atmosphere for correcting radar interferograms. It is rewritten in Python 3 language from PyAPS source code and adapted for ECMWF's ERA-5 corrections.
 
 WARNING: The current version does not work with NARR and MERRA datasets. Contributions are welcomed.
 
@@ -57,7 +57,7 @@ Test the installation by running:
 python PyAPS/tests/test_calc.py
 ```
 
-### 2. Account setup for ERA5
+### 2. Account setup for [ERA5](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5)
 
 ERA5 data set is redistributed over the Copernicus Climate Data Store (CDS)-beta ([migration guide](https://confluence.ecmwf.int/display/CKB/Please+read%3A+CDS+and+ADS+migrating+to+new+infrastructure%3A+Common+Data+Store+%28CDS%29+Engine)). Registration is required for the data access and downloading.
 
