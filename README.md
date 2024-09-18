@@ -47,7 +47,7 @@ or build from source manually as:
 
 ```bash
 git clone https://github.com/insarlab/PyAPS.git
-conda install -c conda-forge --file PyAPS/requirements.txt
+conda install -c conda-forge --file PyAPS/requirements.txt --file PyAPS/tests/requirements.txt
 python -m pip install -e PyAPS
 ```
 
