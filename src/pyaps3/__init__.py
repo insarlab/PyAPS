@@ -22,8 +22,9 @@ except PackageNotFoundError:
 # top-level functions
 from pyaps3.objects import PyAPS
 from pyaps3.autoget import ECMWFdload, MERRAdload, NARRdload
+from pyaps3.ecmwfml2pl import ECMWFml2pl
 
-__all__ = ['__version__', 'PyAPS', 'ECMWFdload', 'MERRAdload', 'NARRdload']
+__all__ = ['__version__', 'PyAPS', 'ECMWFdload', 'MERRAdload', 'NARRdload', 'ECMWFml2pl']
 
 ############################################################
 # Program is part of PyAPS                                 #
