@@ -93,13 +93,13 @@ def intP2H(lvls,hgt,gph,tmp,vpr,cdic,verbose=False):
             hx = temp.copy()
             sFlag = False
             eFlag = False
-            #Add point at start
+            #Add point at end. gph is flipped such that it decreasing.
             if (hx.min() > minAlt):
                 sFlag = True
                 #changed from 1 to 0 (-1 should also work), CL
                 hx = np.concatenate((hx,[minAlt-1]),axis = 0)
 
-            #Add point at end
+            #Add point at start. gph is flipped such that it is decreasing.
             if (hx.max() < maxAlt):
                 eFlag = True
                 #changed from 1 to 0 (-1 should also work), CL
