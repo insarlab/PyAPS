@@ -116,7 +116,7 @@ def intP2H(lvls,hgt,gph,tmp,vpr,cdic,verbose=False):
                 hy = np.concatenate((hy,[val]),axis=0)
 
             if (eFlag == True):
-                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
+                val = hy[0] + (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
                 #changed from 1 to 0 (-1 should also work), CL
                 hy = np.concatenate(([val],hy),axis=0)
 
@@ -135,7 +135,7 @@ def intP2H(lvls,hgt,gph,tmp,vpr,cdic,verbose=False):
                 hy = np.concatenate((hy,[val]),axis=0)
 
             if (eFlag == True):
-                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
+                val = hy[0] + (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
                 #changed from 1 to 0 (-1 should also work), CL
                 hy = np.concatenate(([val],hy),axis=0)
 
@@ -153,7 +153,7 @@ def intP2H(lvls,hgt,gph,tmp,vpr,cdic,verbose=False):
                 hy = np.concatenate((hy,[val]),axis=0)
 
             if (eFlag == True):
-                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
+                val = hy[0] + (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
                 #changed from 1 to 0 (-1 should also work), CL
                 hy = np.concatenate(([val],hy),axis=0)
 
