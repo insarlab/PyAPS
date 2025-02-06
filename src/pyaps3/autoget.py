@@ -238,4 +238,3 @@ def NARRdload(bdate,hr,filedir):
             urllib3.urlretrieve(weburl,dname)
 
     return flist
-

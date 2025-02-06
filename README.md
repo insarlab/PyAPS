@@ -37,6 +37,10 @@ apt install python3-pyaps3
 
 #### b. Install the development version
 
+<p>
+<details>
+<p><summary>Click to expand for more details</summary></p>
+
 The development version can be installed via `pip` as:
 
 ```bash
@@ -56,6 +60,8 @@ Test the installation by running:
 ```bash
 python PyAPS/tests/test_calc.py
 ```
+</details>
+</p>
 
 ### 2. Account setup for [ERA5](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5)
 
