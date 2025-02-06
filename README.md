@@ -59,19 +59,19 @@ python PyAPS/tests/test_calc.py
 
 ### 2. Account setup for [ERA5](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5)
 
-ERA5 data set is redistributed over the Copernicus Climate Data Store (CDS)-beta ([migration guide](https://confluence.ecmwf.int/display/CKB/Please+read%3A+CDS+and+ADS+migrating+to+new+infrastructure%3A+Common+Data+Store+%28CDS%29+Engine)). Registration is required for the data access and downloading.
+ERA5 data set is redistributed over the Copernicus Climate Data Store (CDS). Registration is required for the data access and downloading.
 
-+ [Create a new account](https://cds-beta.climate.copernicus.eu/) on the CDS-beta website if you don't own a user account yet. Note: the old CDS account won't work.
-+ [CDS API setup](https://cds-beta.climate.copernicus.eu/how-to-api#install-the-cds-api-client): Create the local file `$HOME/.cdsapirc` (in your Unix/Linux environment) and add the following two lines:
++ [Create a new account](https://cds.climate.copernicus.eu/) on the CDS website if you don't own a user account yet. Note: the old CDS account won't work ([Goodbye legacy CDS, Hellow New CDS!](https://forum.ecmwf.int/t/goodbye-legacy-climate-data-store-hello-new-climate-data-store-cds/6380)).
++ [CDS API setup](https://cds.climate.copernicus.eu/how-to-api): Create the local file `$HOME/.cdsapirc` (in your Unix/Linux environment) and add the following two lines:
 
 ```shell
-url: https://cds-beta.climate.copernicus.eu/api
+url: https://cds.climate.copernicus.eu/api
 key: your-personal-access-token
 ```
 
-Your Personal Access Token can be found under [Your profile > Personal Access Token](https://cds-beta.climate.copernicus.eu/profile) section or on the [setup guide](https://cds-beta.climate.copernicus.eu/how-to-api#install-the-cds-api-client) page. Alternatively, you could add the token to the `[CDS]` section in `model.cfg` file in the package directory, `site-packages/pyaps3` if installed via conda. Note: using your [old CDS API key](https://cds.climate.copernicus.eu/) will lead to a 401 Client Error and Authentication failed.
+Your Personal Access Token can be found under [Your profile > Personal Access Token](https://cds.climate.copernicus.eu/profile) section or on the [setup guide](https://cds.climate.copernicus.eu/how-to-api) page. Alternatively, you could add the token to the `[CDS]` section in `model.cfg` file in the package directory, `site-packages/pyaps3` if installed via conda. Note: using your legacy CDS API key will lead to a 401 Client Error and Authentication failed.
 
-+ **Make sure** that you accept the data license in the Terms of use on ECMWF website: Login, under [Datasets > ERA5 hourly data on pressure levels from 1940 to present > Download > Terms of use](https://cds-beta.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels?tab=download), click **Accept** to accespt the license to use Copernicus Products.
++ **Make sure** that you accept the data license in the Terms of use on ECMWF website: Login, under [Datasets > ERA5 hourly data on pressure levels from 1940 to present > Download > Terms of use](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-pressure-levels?tab=download), click **Accept** to accespt the license to use Copernicus Products.
 
 + Test the account setup by running:
 
