@@ -41,13 +41,13 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
     # Initialize
 
     # Check data
-    assert model in ('ERA5', 'ERAINT', 'HRES'), 'Unknown model for ECMWF: {}'.format(model)
+    assert model in ('ERA5', 'ERAINT', 'HRES'), f'Unknown model for ECMWF: {model}'
 
     # Infos for downloading
-    if model in 'ERAINT':
+    if model == 'ERAINT':
         print('WARNING: you are downloading from the old ECMWF platform. '
               'ERA-Interim is deprecated, use ERA-5 instead.')
-    if model in 'ERA5':
+    if model == 'ERA5':
         cds_url = 'https://cds.climate.copernicus.eu/api'
         print('INFO: You are using the latest ECMWF platform for downloading datasets: ', cds_url)
 
@@ -56,16 +56,10 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
 
     # Humidity
     assert humidity in ('Q','R'), 'Unknown humidity field for ECMWF'
-    if humidity in 'Q':
+    if humidity == 'Q':
         humidparam = 'specific_humidity' if model == 'ERA5' else 133
-    elif humidity in 'R':
+    elif humidity == 'R':
         humidparam = 'relative_humidity' if model == 'ERA5' else 157
-
-    # Grid size (only for HRES and ERA-Interim)
-    if model in 'HRES':
-        gridsize = '0.10/0.10'
-    elif model in 'ERAINT':
-        gridsize = '0.75/0.75'
 
     #-------------------------------------------
     # file name
@@ -92,7 +86,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
 
         #-------------------------------------------
         # CASE 1: request for CDS API client (new ECMWF platform, for ERA5)
-        if model in 'ERA5':
+        if model == 'ERA5':
             # Contact the server
             rc_file = os.path.expanduser('~/.cdsapirc')
             if os.path.isfile(rc_file):
@@ -139,6 +133,12 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
         #-------------------------------------------
         # CASE 2: request for WEB API client (old ECMWF platform, deprecated, for ERA-Int and HRES)
         else:
+            # Grid size (only for HRES and ERA-Interim)
+            if model == 'HRES':
+                gridsize = '0.10/0.10'
+            elif model == 'ERAINT':
+                gridsize = '0.75/0.75'
+
             # Contact the server
             from pyaps3.ecmwfapi import ECMWFDataServer
             url = "https://api.ecmwf.int/v1"
