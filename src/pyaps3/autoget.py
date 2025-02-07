@@ -45,7 +45,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
 
     # Infos for downloading
     if model == 'ERAINT':
-        print('WARNING: you are downloading from the old ECMWF platform. '
+        print('WARNING: you are downloading from the legacy ECMWF platform. '
               'ERA-Interim is deprecated, use ERA-5 instead.')
     if model == 'ERA5':
         cds_url = 'https://cds.climate.copernicus.eu/api'
