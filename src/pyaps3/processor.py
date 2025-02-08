@@ -111,12 +111,12 @@ def intP2H(lvls,hgt,gph,tmp,vpr,cdic,verbose=False):
             #Interpolating pressure values
             hy = lvls.copy()
             if (sFlag == True):
-                val = hy[-1] +(hx[-1] - hx[-2])* (hy[-1] - hy[-2])/(hx[-2]-hx[-3])
+                val = hy[-1] + (hx[-1] - hx[-2]) * (hy[-1] - hy[-2]) / (hx[-2] - hx[-3])
                 #changed from 1 to 0 (-1 should also work), CL
                 hy = np.concatenate((hy,[val]),axis=0)
 
             if (eFlag == True):
-                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
+                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1]) / (hx[1] - hx[2])
                 #changed from 1 to 0 (-1 should also work), CL
                 hy = np.concatenate(([val],hy),axis=0)
 
@@ -130,12 +130,12 @@ def intP2H(lvls,hgt,gph,tmp,vpr,cdic,verbose=False):
             temp = tmp[:,i,j]
             hy = temp.copy()
             if (sFlag == True):
-                val = hy[-1] +(hx[-1] - hx[-2])* (hy[-1] - hy[-2])/(hx[-2]-hx[-3])
+                val = hy[-1] + (hx[-1] - hx[-2]) * (hy[-1] - hy[-2]) / (hx[-2] - hx[-3])
                 #changed from 1 to 0 (-1 should also work), CL
                 hy = np.concatenate((hy,[val]),axis=0)
 
             if (eFlag == True):
-                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
+                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1]) / (hx[1] - hx[2])
                 #changed from 1 to 0 (-1 should also work), CL
                 hy = np.concatenate(([val],hy),axis=0)
 
@@ -148,12 +148,12 @@ def intP2H(lvls,hgt,gph,tmp,vpr,cdic,verbose=False):
             temp = vpr[:,i,j]
             hy = temp.copy()
             if (sFlag == True):
-                val = hy[-1] +(hx[-1] - hx[-2])* (hy[-1] - hy[-2])/(hx[-2]-hx[-3])
+                val = hy[-1] + (hx[-1] - hx[-2]) * (hy[-1] - hy[-2]) / (hx[-2] - hx[-3])
                 #changed from 1 to 0 (-1 should also work), CL
                 hy = np.concatenate((hy,[val]),axis=0)
 
             if (eFlag == True):
-                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1])/(hx[1]-hx[2])
+                val = hy[0] - (hx[0] - hx[1]) * (hy[0] - hy[1]) / (hx[1] - hx[2])
                 #changed from 1 to 0 (-1 should also work), CL
                 hy = np.concatenate(([val],hy),axis=0)
 

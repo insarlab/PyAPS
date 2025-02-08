@@ -41,14 +41,14 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
     # Initialize
 
     # Check data
-    assert model in ('ERA5', 'ERAINT', 'HRES'), 'Unknown model for ECMWF: {}'.format(model)
+    assert model in ('ERA5', 'ERAINT', 'HRES'), f'Unknown model for ECMWF: {model}'
 
     # Infos for downloading
-    if model in 'ERAINT':
-        print('WARNING: you are downloading from the old ECMWF platform. '
+    if model == 'ERAINT':
+        print('WARNING: you are downloading from the legacy ECMWF platform. '
               'ERA-Interim is deprecated, use ERA-5 instead.')
-    if model in 'ERA5':
-        cds_url = 'https://cds-beta.climate.copernicus.eu/api'
+    if model == 'ERA5':
+        cds_url = 'https://cds.climate.copernicus.eu/api'
         print('INFO: You are using the latest ECMWF platform for downloading datasets: ', cds_url)
 
     #-------------------------------------------
@@ -56,16 +56,10 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
 
     # Humidity
     assert humidity in ('Q','R'), 'Unknown humidity field for ECMWF'
-    if humidity in 'Q':
+    if humidity == 'Q':
         humidparam = 'specific_humidity' if model == 'ERA5' else 133
-    elif humidity in 'R':
+    elif humidity == 'R':
         humidparam = 'relative_humidity' if model == 'ERA5' else 157
-
-    # Grid size (only for HRES and ERA-Interim)
-    if model in 'HRES':
-        gridsize = '0.10/0.10'
-    elif model in 'ERAINT':
-        gridsize = '0.75/0.75'
 
     #-------------------------------------------
     # file name
@@ -92,7 +86,7 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
 
         #-------------------------------------------
         # CASE 1: request for CDS API client (new ECMWF platform, for ERA5)
-        if model in 'ERA5':
+        if model == 'ERA5':
             # Contact the server
             rc_file = os.path.expanduser('~/.cdsapirc')
             if os.path.isfile(rc_file):
@@ -102,39 +96,49 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
                 key = config.get('CDS', 'key')
                 c = cdsapi.Client(url=url, key=key)
 
-            # Pressure levels
-            pressure_lvls = ['1','2','3','5','7','10','20','30','50',
-                            '70','100','125','150','175','200','225',
-                            '250','300','350','400','450','500','550',
-                            '600','650','700','750','775','800','825',
-                            '850','875','900','925','950','975','1000']
+            # request dictionary
+            pressure_lvls = [
+                '1','2','3','5','7','10','20','30','50',
+                '70','100','125','150','175','200','225',
+                '250','300','350','400','450','500','550',
+                '600','650','700','750','775','800','825',
+                '850','875','900','925','950','975','1000',
+            ]
 
-            # Dictionary
-            indict = {'product_type'   :'reanalysis',
-                      'format'         :'grib',
-                      'variable'       :['geopotential','temperature','{}'.format(humidparam)],
-                      'pressure_level' : pressure_lvls,
-                      'year'           :'{}'.format(day[0:4]),
-                      'month'          :'{}'.format(day[4:6]),
-                      'day'            :'{}'.format(day[6:8]),
-                      'time'           :'{}:00'.format(hr)}
+            indict = {
+                'product_type'   : ['reanalysis'],
+                'variable'       : ['geopotential', 'temperature', f'{humidparam}'],
+                'year'           : [f'{day[0:4]}'],
+                'month'          : [f'{day[4:6]}'],
+                'day'            : [f'{day[6:8]}'],
+                'time'           : [f'{hr}:00'],
+                'pressure_level' : pressure_lvls,
+                'data_format'    : 'grib',
+            }
 
             # download a geographical area subset
             if snwe is not None:
                 s, n, w, e = snwe
-                indict['area'] = '/'.join(['{:.2f}'.format(x) for x in [n, w, s, e]])
+                indict['area'] = [n, w, s, e]
 
             # Assert grib file not yet downloaded
             if not os.path.exists(fname):
-                print('Downloading %d of %d: %s '%(i+1, len(bdate), fname))
+                print(f'Downloading {i+1} of {len(bdate)}: {fname} ')
                 print(indict)
 
                 # Make the request
-                c.retrieve('reanalysis-{}-pressure-levels'.format(model.lower()),indict,target=fname)
+                ds_name = f'reanalysis-{model.lower()}-pressure-levels'
+                c.retrieve(ds_name, indict, target=fname)
 
         #-------------------------------------------
         # CASE 2: request for WEB API client (old ECMWF platform, deprecated, for ERA-Int and HRES)
         else:
+            # Grid size (only for HRES and ERA-Interim)
+            if model == 'HRES':
+                gridsize = '0.10/0.10'
+            elif model == 'ERAINT':
+                gridsize = '0.75/0.75'
+
             # Contact the server
             from pyaps3.ecmwfapi import ECMWFDataServer
             url = "https://api.ecmwf.int/v1"
