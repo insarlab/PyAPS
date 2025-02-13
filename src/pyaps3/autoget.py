@@ -10,6 +10,7 @@
 
 import os.path
 import configparser
+import math
 import urllib3
 import cdsapi
 import pyaps3 as pa
@@ -39,6 +40,17 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
 
     #-------------------------------------------
     # Initialize
+
+    # Ensure snwe is in native int, not numpy.int32/64 or float etc.
+    # Note that even though cdsapi support float, we still use int
+    # for file naming simplicity at the cost of slightly larger file size.
+    if snwe is not None:
+        s, n, w, e = snwe
+        snwe = (math.floor(s), math.ceil(n), math.floor(w), math.ceil(e))
+        snwe = tuple(int(x) for x in snwe)
+        if (s, n, w, e) != snwe:
+            print(f'WARNING: input area ({s}, {n}, {w}, {e}) is NOT exact integer,',
+                  f'\n\tconvert to its bounding box in integer {snwe} and continue.')
 
     # Check data
     assert model in ('ERA5', 'ERAINT', 'HRES'), f'Unknown model for ECMWF: {model}'
