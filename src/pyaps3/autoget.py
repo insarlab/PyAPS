@@ -130,8 +130,9 @@ def ECMWFdload(bdate,hr,filedir,model='ERA5',datatype='fc',humidity='Q',snwe=Non
 
             # download a geographical area subset
             if snwe is not None:
-                s, n, w, e = snwe
+                s, n, w, e = [float(v) for v in snwe]
                 indict['area'] = [n, w, s, e]
+
 
             # Assert grib file not yet downloaded
             if not os.path.exists(fname):
