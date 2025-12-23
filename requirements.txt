@@ -3,5 +3,7 @@ numpy
 pygrib
 scipy
 urllib3
+xarray # for the HRES netcdf model level to pressure level conversion
+netcdf4 # for the compression when save the netcdf file
 #netcdf4  #for MERRA, which is currently not supported
 #pyhdf    #for MERRA, which is currently not supported
